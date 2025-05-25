@@ -233,8 +233,8 @@ find_c_periods()
 
 
 # %%
-def fig_2_ts_2_er_signals(df: pd.DataFrame):
-    fig = plt.figure(2, **FIGKWARGS)
+def fig_2_ts_2_er_signals(df: pd.DataFrame, *, fignum=2):
+    fig = plt.figure(fignum, **FIGKWARGS)
     ax_peak = fig.add_subplot(1, 3, 1)
     ax_oscillations = fig.add_subplot(1, 3, (2, 3))
     axs = (ax_peak, ax_oscillations)
@@ -269,8 +269,8 @@ fig.savefig("fig_2_ts_2_er_signals.svg")
 
 
 # %%
-def fig_3_ts_2_speed_signals(df: pd.DataFrame):
-    fig = plt.figure(3, **FIGKWARGS)
+def fig_3_ts_2_speed_signals(df: pd.DataFrame, *, fignum=1):
+    fig = plt.figure(fignum, **FIGKWARGS)
     ax = sns.lineplot(data=df, x="t", y="v", hue="label")
     ax.set_xlim(left=T0 - TD, right=T1 + TD)
     ax.set_ylim(bottom=0.0)
@@ -335,9 +335,11 @@ def get_local_min_max(xs: jax.Array):
 def fig_4_extrema_end_median_regr_2_models(
     no_mf_min_max: tuple[jax.Array, jax.Array],
     mf_min_max: tuple[jax.Array, jax.Array],
+    *,
     d_jitter=0.25,
     scatter_alpha=0.2,
     scatter_marker=".",
+    fignum=1,
 ):
     def group_jitter(key, ax, ys, group_idx: int, color=None):
         kwargs = dict(
@@ -397,7 +399,7 @@ def fig_4_extrema_end_median_regr_2_models(
     pair_top_bound = (1.5, 0.52)
     pair_bottom_bound = (1.22, 0.0)
 
-    fig = plt.figure(4, figsize=(10, 6))
+    fig = plt.figure(fignum, figsize=(10, 6))
     rows, cols = 3, 3
     ax_dict = dict(
         max_high=fig.add_subplot(rows, cols, 1),
@@ -508,7 +510,7 @@ find_levene(df_models)
 fig, _ = fig_1_ts_cyt_signals(
     df_models.loc[df_models["name"] != DEFAULT_CHANG_MODEL_NAME], fignum=5, alpha=0.7
 )
-fig.savefig('fig_5_ts_cyt_signals.svg')
+fig.savefig("fig_5_ts_cyt_signals.svg")
 
 # %%
 plt.show()
