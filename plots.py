@@ -72,6 +72,7 @@ def multisim(
             pd.DataFrame(
                 dict(
                     idx=idx,
+                    B=model.mp.B,
                     t=batched_model.ts,
                     c=batched_model.ys[:, 0 + eq_num * idx],
                     c_e=batched_model.ys[:, 1 + eq_num * idx],
@@ -98,9 +99,16 @@ magnetic_params_25_mTl = [
     magnetic_params_default._replace(omega=(1e-3 * jnp.pi)),
     magnetic_params_default._replace(omega=(0.5e-3 * jnp.pi)),
 ]
+magnetic_params_100_mTl = [
+    params._replace(B=100e-3) for params in magnetic_params_25_mTl
+]
 models = [
     CalciumModel(mp=fn_obj)
-    for fn_obj in [magmetic_model_no_field, *magnetic_params_25_mTl]
+    for fn_obj in [
+        magmetic_model_no_field,
+        *magnetic_params_25_mTl,
+        *magnetic_params_100_mTl,
+    ]
 ]
 batched_model, df_models = multisim(*models)
 
@@ -493,9 +501,21 @@ find_levene(df_models)
 
 # %%
 fig, _ = fig_1_ts_cyt_signals(
-    df_models.loc[df_models[IDX] != MODEL_IDX_DEFAULT_CHANG], fignum=5, alpha=0.7
+    df_models.loc[
+        (df_models[IDX] != MODEL_IDX_DEFAULT_CHANG) & (df_models["B"] == 25e-3)
+    ],
+    fignum=5,
+    alpha=0.7,
 )
 fig.savefig("fig_5_ts_cyt_signals.svg")
+
+# %%
+fig, _ = fig_1_ts_cyt_signals(
+    df_models.loc[df_models["B"] == 100e-3],
+    fignum=6,
+    alpha=0.7,
+)
+fig.savefig("fig_6_ts_cyt_signals.svg")
 
 # %%
 plt.show()
