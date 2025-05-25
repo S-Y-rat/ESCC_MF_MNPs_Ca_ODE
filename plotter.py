@@ -186,8 +186,6 @@ class Plotter(NamedTuple):
         row_high = ["max_high", "mf_high"]
         row_low = ["max_low", "mf_low"]
         pair_max, pair_mf = list(zip(row_high, row_low))
-        pair_top_bound = (1.5, 0.52)
-        pair_bottom_bound = (1.22, 0.0)
 
         fig = plt.figure(fignum, **figkwargs)
         rows, cols = 3, 3
@@ -203,13 +201,12 @@ class Plotter(NamedTuple):
             ax_dict[high].spines.bottom.set_visible(False)
             ax_dict[low].spines.top.set_visible(False)
             ax_dict[high].sharex(ax_dict[low])
+            ax_dict[high].set_ylim(bottom=1.22, top=1.6)
+            ax_dict[low].set_ylim(top=0.52, bottom=0.0)
 
-        for part, top_bound, bottom_bound in zip(
-            pair_max, pair_top_bound, pair_bottom_bound
-        ):
+        for part in pair_max:
             group_jitter(keys[0], ax_dict[part], no_mf_max, 0, no_mf_max_color)
             group_jitter(keys[1], ax_dict[part], mf_max, 1, mf_max_color)
-            ax_dict[part].set_ylim(bottom=bottom_bound, top=top_bound)
 
         ybroken_axis(
             *(ax_dict[part] for part in pair_max),
@@ -234,12 +231,9 @@ class Plotter(NamedTuple):
         ax_dict["min"].set_title("B")
         ax_dict["min"].legend(**legend_kwargs)
 
-        for part, top_bound, bottom_bound in zip(
-            pair_mf, pair_top_bound, pair_bottom_bound
-        ):
+        for part in pair_mf:
             group_jitter(keys[4], ax_dict[part], mf_max, 0, mf_max_color)
             group_jitter(keys[5], ax_dict[part], mf_min, 1, mf_min_color)
-            ax_dict[part].set_ylim(bottom=bottom_bound, top=top_bound)
 
         ybroken_axis(
             *(ax_dict[part] for part in pair_mf),
