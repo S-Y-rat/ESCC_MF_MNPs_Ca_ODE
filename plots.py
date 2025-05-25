@@ -16,11 +16,6 @@ from magnetic_field import MagneticFieldParameters
 from calcium_model import CalciumModel
 
 # %%
-magnetic_parameters = MagneticFieldParameters(
-    regime="uniform", time_dependence="rotating"
-)
-calcium_model = CalciumModel()
-
 T0, T1 = 0, 1800
 TD = 10
 
@@ -60,22 +55,23 @@ def batched_adapter(*diff_fun_systems: CalciumModel):
 
 
 def multisim(
-    *, eq_num=4, **diff_fun_systems: CalciumModel
+    *diff_fun_systems: CalciumModel,
+    eq_num=4,
 ) -> tuple[Solution, pd.DataFrame]:
     def J_in_fn(t: float, c_e: float, model: CalciumModel):
         return model.delta * model.J_in(c_e) + model.J_magn(model.mp, t)
 
     batched_model = simulate(
-        T0,
-        T1,
-        batched_adapter(*diff_fun_systems.values()),
-        jnp.concat([sys.initial_values for sys in diff_fun_systems.values()]),
+        t0=T0,
+        t1=T1,
+        diff_fun_system=batched_adapter(*diff_fun_systems),
+        initial_values=jnp.concat([sys.initial_values for sys in diff_fun_systems]),
     )
     return batched_model, pd.concat(
         [
             pd.DataFrame(
                 dict(
-                    name=name,
+                    idx=idx,
                     t=batched_model.ts,
                     c=batched_model.ys[:, 0 + eq_num * idx],
                     c_e=batched_model.ys[:, 1 + eq_num * idx],
@@ -87,43 +83,32 @@ def multisim(
                     label=model.mp.legend_MF,
                 )
             )
-            for idx, (name, model) in enumerate(diff_fun_systems.items())
+            for idx, model in enumerate(diff_fun_systems)
         ]
     )
 
 
-models = {
-    key: CalciumModel(mp=fn_obj)
-    for key, fn_obj in dict(
-        no_mf=MagneticFieldParameters(
-            regime="uniform",
-            time_dependence="rotating",
-            B=0,
-        ),
-        default_mf=magnetic_parameters,
-        mf_1_5=MagneticFieldParameters(
-            regime="uniform",
-            time_dependence="rotating",
-            omega=(1.5e-3 * jnp.pi),
-        ),
-        mf_1_0=MagneticFieldParameters(
-            regime="uniform",
-            time_dependence="rotating",
-            omega=(1e-3 * jnp.pi),
-        ),
-        mf_0_5=MagneticFieldParameters(
-            regime="uniform",
-            time_dependence="rotating",
-            omega=(0.5e-3 * jnp.pi),
-        ),
-    ).items()
-}
-batched_model, df_models = multisim(**models)
+magnetic_params_default = MagneticFieldParameters(
+    regime="uniform", time_dependence="rotating"
+)
+magmetic_model_no_field = magnetic_params_default._replace(B=0)
+magnetic_params_25_mTl = [
+    magnetic_params_default,
+    magnetic_params_default._replace(omega=(1.5e-3 * jnp.pi)),
+    magnetic_params_default._replace(omega=(1e-3 * jnp.pi)),
+    magnetic_params_default._replace(omega=(0.5e-3 * jnp.pi)),
+]
+models = [
+    CalciumModel(mp=fn_obj)
+    for fn_obj in [magmetic_model_no_field, *magnetic_params_25_mTl]
+]
+batched_model, df_models = multisim(*models)
 
-DEFAULT_CHANG_MODEL_NAME, DEFAULT_MM_NAME, MM_1_5, MM_1_0, MM_0_5 = models.keys()
+IDX = "idx"
+MODEL_IDX_DEFAULT_CHANG = 0
+MODEL_IDX_DEFAULT_MAGN, MODEL_IDX_1_5, MODEL_IDX_1_0, MODEL_IDX_0_5 = list(range(1, 5))
 df_defaults = df_models.loc[
-    (df_models["name"] == DEFAULT_CHANG_MODEL_NAME)
-    | (df_models["name"] == DEFAULT_MM_NAME)
+    df_models[IDX].isin([MODEL_IDX_DEFAULT_CHANG, MODEL_IDX_DEFAULT_MAGN])
 ]
 
 
@@ -213,8 +198,8 @@ def find_c_periods():
     find_local_min_time = partial(find_local_fn_time, jnp.min)
     magnetic_model_find_local_min_time = partial(
         find_local_min_time,
-        df_models.loc[df_models["name"] == DEFAULT_MM_NAME]["t"].to_numpy(),
-        df_models.loc[df_models["name"] == DEFAULT_MM_NAME]["c"].to_numpy(),
+        df_models.loc[df_models[IDX] == MODEL_IDX_DEFAULT_MAGN]["t"].to_numpy(),
+        df_models.loc[df_models[IDX] == MODEL_IDX_DEFAULT_MAGN]["c"].to_numpy(),
     )
 
     interval_1 = magnetic_model_find_local_min_time(
@@ -288,7 +273,7 @@ fig.savefig("fig_3_ts_2_speed_signals.svg")
 # %%
 def find_v_periods():
     find_local_max_time = partial(find_local_fn_time, jnp.max)
-    df_mm = df_defaults.loc[df_defaults["name"] == DEFAULT_MM_NAME]
+    df_mm = df_defaults.loc[df_defaults[IDX] == MODEL_IDX_DEFAULT_MAGN]
     J_in_magn_local_max_time = partial(
         find_local_max_time, df_mm["t"].to_numpy(), df_mm["v"].to_numpy()
     )
@@ -470,10 +455,10 @@ def fig_4_extrema_end_median_regr_2_models(
 
 fig, _ = fig_4_extrema_end_median_regr_2_models(
     get_local_min_max(
-        df_models.loc[df_models["name"] == DEFAULT_CHANG_MODEL_NAME]["c"].to_numpy()
+        df_models.loc[df_models[IDX] == MODEL_IDX_DEFAULT_CHANG]["c"].to_numpy()
     ),
     get_local_min_max(
-        df_models.loc[df_models["name"] == DEFAULT_MM_NAME]["c"].to_numpy()
+        df_models.loc[df_models[IDX] == MODEL_IDX_DEFAULT_MAGN]["c"].to_numpy()
     ),
 )
 fig.savefig("fig_4_extrema_end_median_regr_2_models.svg")
@@ -508,7 +493,7 @@ find_levene(df_models)
 
 # %%
 fig, _ = fig_1_ts_cyt_signals(
-    df_models.loc[df_models["name"] != DEFAULT_CHANG_MODEL_NAME], fignum=5, alpha=0.7
+    df_models.loc[df_models[IDX] != MODEL_IDX_DEFAULT_CHANG], fignum=5, alpha=0.7
 )
 fig.savefig("fig_5_ts_cyt_signals.svg")
 
