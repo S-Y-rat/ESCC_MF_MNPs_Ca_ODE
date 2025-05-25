@@ -93,21 +93,21 @@ magnetic_params_default = MagneticFieldParameters(
     regime="uniform", time_dependence="rotating"
 )
 magmetic_model_no_field = magnetic_params_default._replace(B=0)
-magnetic_params_25_mTl = [
+magnetic_params_25_mT = [
     magnetic_params_default,
     magnetic_params_default._replace(omega=(1.5e-3 * jnp.pi)),
     magnetic_params_default._replace(omega=(1e-3 * jnp.pi)),
     magnetic_params_default._replace(omega=(0.5e-3 * jnp.pi)),
 ]
-magnetic_params_100_mTl = [
-    params._replace(B=100e-3) for params in magnetic_params_25_mTl
+magnetic_params_100_mT = [
+    params._replace(B=100e-3) for params in magnetic_params_25_mT
 ]
 models = [
     CalciumModel(mp=fn_obj)
     for fn_obj in [
         magmetic_model_no_field,
-        *magnetic_params_25_mTl,
-        *magnetic_params_100_mTl,
+        *magnetic_params_25_mT,
+        *magnetic_params_100_mT,
     ]
 ]
 batched_model, df_models = multisim(*models)
