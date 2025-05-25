@@ -58,6 +58,7 @@ def multisim(
                 dict(
                     idx=idx,
                     B=model.mp.B,
+                    omega=model.mp.omega,
                     t=batched_model.ts,
                     c=batched_model.ys[:, 0 + eq_num * idx],
                     c_e=batched_model.ys[:, 1 + eq_num * idx],

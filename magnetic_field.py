@@ -41,7 +41,7 @@ class MagneticFieldParameters(NamedTuple):
     @property
     def legend_MF(self) -> str:
         if self.__is_uni_rot:
-            return f"$B={self.B*1e3}$ mT, $\\nu={self.omega*1e3/jnp.pi}\\cdot\\pi$ mHz"
+            return f"$B={self.B*1e3}$ mT, $\\omega={self.omega*1e3/jnp.pi}\\cdot\\pi$ mHz"
         return f"G0={self.G0} T/m"
 
     @property

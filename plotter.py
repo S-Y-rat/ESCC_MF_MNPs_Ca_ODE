@@ -109,7 +109,7 @@ class Plotter(NamedTuple):
         fig.suptitle("$c_{{e}}(t)$ is $Ca^{{+2}}$ concentration in ER")
         return fig, axs
 
-    def fig_3_ts_2_speed_signals(self, df: pd.DataFrame, *, fignum=1):
+    def fig_3_ts_2_speed_signals(self, df: pd.DataFrame, *, fignum=3):
         fig = plt.figure(fignum, **self.figkwargs)
         ax = sns.lineplot(data=df, x="t", y="v", hue="label")
         ax.set_xlim(left=self.t0 - self.td, right=self.t1 + self.td)
@@ -128,7 +128,7 @@ class Plotter(NamedTuple):
         d_jitter=0.25,
         scatter_alpha=0.2,
         scatter_marker=".",
-        fignum=1,
+        fignum=4,
         figkwargs=dict(figsize=(10, 6)),
     ):
         def group_jitter(key, ax, ys, group_idx: int, color=None):
