@@ -3,6 +3,8 @@ from functools import partial
 from typing import Optional
 
 import jax
+
+jax.config.update("jax_enable_x64", True)
 import jax.numpy as jnp
 from scipy.stats import levene, ttest_ind
 import seaborn as sns
@@ -13,7 +15,7 @@ sns.set_theme(style="whitegrid")
 from magnetic_field import MagneticFieldParameters
 from calcium_model import CalciumModel
 from plotter import Plotter
-from solver import multisim
+from solver import multisim, interpolate_data
 
 # %%
 T0, T1 = 0, 1800
@@ -52,14 +54,20 @@ magnetic_params_100_mT = [params._replace(B=100e-3) for params in magnetic_param
 models = [
     CalciumModel(mp=fn_obj)
     for fn_obj in [
-        *magmetic_params_no_field,
-        *magnetic_params_10_mT,
-        *magnetic_params_25_mT,
-        *magnetic_params_100_mT,
+        *magmetic_params_no_field,  # idx = range(0, 4)
+        *magnetic_params_10_mT,  # idx = range(4, 8)
+        *magnetic_params_25_mT,  # idx = range(8, 12)
+        *magnetic_params_100_mT,  # idx = range(12, 16)
     ]
 ]
-batched_model, df_models = multisim(t0=T0, t1=T1, *models)
+batched_sol = multisim(t0=T0, t1=T1, *models)
 
+# %%
+df_models = interpolate_data(
+    sol=batched_sol,
+    models=models,
+    ts=jnp.linspace(T0, T1, 10 * (T1 - T0)),
+)
 df_defaults = df_loc_fn(df_models, Bs=[0.0, 25e-3], omegas=[1.7e-3 * jnp.pi])
 
 

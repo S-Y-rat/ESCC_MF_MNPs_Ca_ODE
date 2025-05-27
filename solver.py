@@ -1,4 +1,5 @@
 from collections.abc import Callable
+import equinox as eqx
 from diffrax import diffeqsolve, ODETerm, Dopri5, SaveAt, PIDController, Solution
 import jax
 import jax.numpy as jnp
@@ -7,6 +8,7 @@ import pandas as pd
 from calcium_model import CalciumModel
 
 
+@eqx.filter_jit
 def simulate(
     t0: float,
     t1: float,
@@ -15,8 +17,8 @@ def simulate(
 ):
     term = ODETerm(diff_fun_system)
     solver = Dopri5()
-    saveat = SaveAt(ts=jnp.linspace(t0, t1, 10000))
-    stepsize_controller = PIDController(rtol=1e-5, atol=1e-5)
+    saveat = SaveAt(dense=True)
+    stepsize_controller = PIDController(rtol=1e-8, atol=1e-8)
     return diffeqsolve(
         term,
         solver,
@@ -26,6 +28,7 @@ def simulate(
         y0=initial_values,
         saveat=saveat,
         stepsize_controller=stepsize_controller,
+        max_steps=16 * 4096,
     )
 
 
@@ -41,35 +44,41 @@ def multisim(
     *diff_fun_systems: CalciumModel,
     t0: float,
     t1: float,
-    eq_num=4,
-) -> tuple[Solution, pd.DataFrame]:
-    def J_in_fn(t: float, c_e: float, model: CalciumModel):
-        return model.delta * model.J_in(c_e) + model.J_magn(model.mp, t)
-
-    batched_model = simulate(
+) -> Solution:
+    return simulate(
         t0=t0,
         t1=t1,
         diff_fun_system=batched_adapter(*diff_fun_systems),
         initial_values=jnp.concat([sys.initial_values for sys in diff_fun_systems]),
     )
-    return batched_model, pd.concat(
+
+
+def interpolate_data(
+    sol: Solution,
+    models: list[CalciumModel],
+    ts: jax.Array,
+) -> pd.DataFrame:
+    def J_in_fn(t: float, c_e: float, model: CalciumModel):
+        return model.delta * model.J_in(c_e) + model.J_magn(model.mp, t)
+
+    interpolated: jax.Array = jax.vmap(sol.evaluate)(ts)
+    eq_num = interpolated[0].shape[0] // len(models)
+    return pd.concat(
         [
             pd.DataFrame(
                 dict(
                     idx=idx,
                     B=model.mp.B,
                     omega=model.mp.omega,
-                    t=batched_model.ts,
-                    c=batched_model.ys[:, 0 + eq_num * idx],
-                    c_e=batched_model.ys[:, 1 + eq_num * idx],
-                    h=batched_model.ys[:, 2 + eq_num * idx],
-                    p=batched_model.ys[:, 3 + eq_num * idx],
-                    v=J_in_fn(
-                        batched_model.ts, batched_model.ys[:, 1 + eq_num * idx], model
-                    ),
+                    t=ts,
+                    c=interpolated[:, 0 + eq_num * idx],
+                    c_e=interpolated[:, 1 + eq_num * idx],
+                    h=interpolated[:, 2 + eq_num * idx],
+                    p=interpolated[:, 3 + eq_num * idx],
+                    v=J_in_fn(ts, interpolated[:, 1 + eq_num * idx], model),
                     label=model.mp.legend_MF,
                 )
             )
-            for idx, model in enumerate(diff_fun_systems)
+            for idx, model in enumerate(models)
         ]
     )
