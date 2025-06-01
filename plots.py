@@ -31,7 +31,7 @@ def df_loc_fn(
 ) -> pd.DataFrame:
     B_field, omega_field = "B", "omega"
     if (Bs is not None) & (omegas is not None):
-        return df.loc[df[B_field].isin(Bs) & df[omega_field].isin(omegas)]
+        return df.loc[df[B_field].isin(Bs) & df[omega_field].isin(omegas)]  # type: ignore
     elif Bs is not None:
         return df.loc[df[B_field].isin(Bs)]
     elif omegas is not None:
@@ -86,7 +86,7 @@ def find_local_fn_time(
     fn, t: jax.Array, c: jax.Array, min_time: float, max_time: float
 ) -> float:
     res = jnp.where(c == fn(c[time_mask(t, min_time, max_time)]))
-    return t[res[0]][0]
+    return t[res[0]].item()
 
 
 def find_c_periods():
@@ -135,7 +135,7 @@ def find_v_periods():
         800, 1000
     ) - J_in_magn_local_max_time(200, 400)
     interval_J_in_magn_2 = J_in_magn_local_max_time(
-        1400, 1500
+        1400, 1600
     ) - J_in_magn_local_max_time(800, 1000)
     print(
         f"First interval for v(t) magn: {interval_J_in_magn_1:.2f} s\nSecond interval for v(t) magn: {interval_J_in_magn_2:.2f} s"
@@ -174,8 +174,8 @@ def plot_c():
     df_no_field = df_loc_fn(df_defaults, Bs=[0.0])
     df_field = df_loc_fn(df_defaults, Bs=[25e-3])
     fig, _ = plotter.fig_4_extrema_end_median_regr_2_models(
-        get_local_min_max(df_no_field["c"].to_numpy()),
-        get_local_min_max(df_field["c"].to_numpy()),
+        get_local_min_max(jnp.asarray(df_no_field["c"].to_numpy())),
+        get_local_min_max(jnp.asarray(df_field["c"].to_numpy())),
     )
     return fig
 
