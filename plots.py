@@ -6,6 +6,7 @@ import jax
 
 jax.config.update("jax_enable_x64", True)
 import jax.numpy as jnp
+from scipy.stats import ttest_ind
 import seaborn as sns
 import pandas as pd
 
@@ -240,6 +241,11 @@ def scatter_c_effects() -> None:
         f"Shapes of local extrema when no MF: {no_mf_loc[0].shape}, {no_mf_loc[1].shape}"
     )
     print(f"Shapes of local extrema when MF: {mf_loc[0].shape}, {mf_loc[1].shape}")
+    print(
+        "T-test for local minima and local maxima when MF: {}".format(
+            ttest_ind(*mf_loc)
+        )
+    )
 
 
 scatter_c_effects()
