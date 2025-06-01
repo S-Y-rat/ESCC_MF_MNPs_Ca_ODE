@@ -1,6 +1,7 @@
 # %%
 from functools import partial
 from typing import Optional
+import time
 
 import jax
 
@@ -18,6 +19,7 @@ from plotter import Plotter
 from solver import multisim, interpolate_data
 
 # %%
+start_time = time.perf_counter()
 T0, T1 = 0, 1800
 plotter = Plotter(T0, T1)
 
@@ -286,3 +288,5 @@ fig.savefig("fig_8_ts_cyt_signals.svg")
 
 # %%
 plotter.show()
+end_time = time.perf_counter()
+print(f"Overall execution time is {end_time - start_time:.2f} s")
