@@ -28,22 +28,6 @@ def ybroken_axis(ax_high, ax_low, *, d=0.5, color="k"):
     yaxis_breaks_marker(ax_low, (1, 1))
 
 
-def Q2_Q3(ax, groups):
-    def get_whiskers(xs: jax.Array):
-        return jnp.abs(
-            jnp.array([jnp.percentile(xs, 25), jnp.percentile(xs, 75)]) - jnp.median(xs)
-        )
-
-    ax.errorbar(
-        jnp.arange(len(groups)),
-        list(map(jnp.median, groups)),
-        yerr=list(map(get_whiskers, groups)),
-        linestyle="none",
-        ecolor="black",
-        capsize=7,
-    )
-
-
 class Plotter(NamedTuple):
     t0: int
     t1: int
@@ -213,7 +197,6 @@ class Plotter(NamedTuple):
             color=get_ax_xgridcolor(ax_dict["max_high"]), # type: ignore
         )
 
-        Q2_Q3(ax_dict["max_low"], [no_mf_max, mf_max])
         regression_plot(ax_dict["max_low"], coefs_max)  # type: ignore
         ax_dict["max_low"].set_xticks(x, ["No MF", "MF"])
         ax_dict["max_low"].set_xlabel("Local\nMaxima")
@@ -224,7 +207,6 @@ class Plotter(NamedTuple):
         group_jitter(keys[3], ax_dict["min"], mf_min, 1, mf_min_color)
         ax_dict["min"].set_ylim(bottom=0.0)
 
-        Q2_Q3(ax_dict["min"], [no_mf_min, mf_min])
         regression_plot(ax_dict["min"], coefs_min)  # type: ignore
         ax_dict["min"].set_xlabel("Local\nMinima")
         ax_dict["min"].set_xticks(x, ["No MF", "MF"])
@@ -240,7 +222,6 @@ class Plotter(NamedTuple):
             color=get_ax_xgridcolor(ax_dict["mf_high"]), # type: ignore
         )
 
-        Q2_Q3(ax_dict["mf_low"], [mf_max, mf_min])
         regression_plot(ax_dict["mf_low"], coefs_mf)  # type: ignore
         ax_dict["mf_low"].set_xticks(x, ["Local\nMaxima", "Local\nMinima"])
         ax_dict["mf_low"].set_xlabel("MF")
