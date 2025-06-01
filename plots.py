@@ -77,7 +77,7 @@ fig.savefig("fig_1_ts_2_cyt_signals.svg")
 
 # %%
 @jax.jit
-def time_mask(t: jax.Array, min_time: float, max_time: float):
+def time_mask(t: jax.Array, min_time: float, max_time: float) -> jax.Array:
     return (t > min_time) & (t < max_time)
 
 
@@ -88,7 +88,7 @@ def find_local_fn_time(
     return t[res[0]].item()
 
 
-def find_c_periods():
+def find_c_periods() -> None:
     df = df_loc_fn(df_defaults, Bs=[25e-3])
     find_local_min_time = partial(find_local_fn_time, jnp.min)
     magnetic_model_find_local_min_time = partial(
@@ -132,7 +132,7 @@ fig.savefig("fig_3_ts_2_speed_signals.svg")
 
 
 # %%
-def find_v_periods():
+def find_v_periods() -> None:
     find_local_max_time = partial(find_local_fn_time, jnp.max)
     df_mm = df_loc_fn(df_defaults, Bs=[25e-3])
     J_in_magn_local_max_time = partial(
@@ -159,7 +159,7 @@ find_v_periods()
 
 
 # %%
-def get_local_min_max_mask(xs: jax.Array):
+def get_local_min_max_mask(xs: jax.Array) -> jax.Array:
     left = xs[:-2]
     center = xs[1:-1]
     right = xs[2:]
@@ -183,7 +183,7 @@ def get_local_min_max(xs: jax.Array):
 
 
 # %%
-def local_minima_periods_medians(df_param: str):
+def local_minima_periods_medians(df_param: str) -> None:
     def internal(B: float):
         df = df_loc_fn(df_defaults, Bs=[B])
         return jnp.asarray(df["t"].to_numpy())[
