@@ -1,11 +1,11 @@
-from typing import NamedTuple, Optional
+from typing import Optional
 import jax
 import jax.numpy as jnp
 import equinox as eqx
 from magnetic_field import MagneticFieldParameters
 
 
-class CalciumModel(NamedTuple):
+class CalciumModel(eqx.Module):
     """Model class that contains Chang model (dSdt) and it's version with respect of WSS (dWdt)"""
 
     # Set of dimensional parameters used for transformation
