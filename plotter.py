@@ -62,12 +62,12 @@ class Plotter(NamedTuple):
         axs = (ax_peak, ax_oscillations)
 
         plot_kwargs = dict(data=df, x="t", y="c", hue="label", alpha=alpha)
-        sns.lineplot(**plot_kwargs, ax=ax_peak, legend=False)
-        sns.lineplot(**plot_kwargs, ax=ax_oscillations)
+        sns.lineplot(**plot_kwargs, ax=ax_peak, legend=False)  # type: ignore
+        sns.lineplot(**plot_kwargs, ax=ax_oscillations)  # type: ignore
 
         for ax, title in zip(axs, ("A", "B")):
-            ax.set_xlabel(None)
-            ax.set_ylabel(None)
+            ax.set_xlabel(None)  # type: ignore
+            ax.set_ylabel(None)  # type: ignore
             ax.set_title(title)
 
         ax_oscillations.set_ylim(bottom=0.0, top=0.58)
@@ -76,7 +76,7 @@ class Plotter(NamedTuple):
         ax_oscillations.legend(loc="upper right")
         ax_peak.set_ylabel("$c(t), \\mu M$")
         fig.supxlabel("$t, s$")
-        fig.suptitle("$c(t)$ is $Ca^{{+2}}$ concentration in the cytosol")
+        fig.suptitle("$c(t)$ is $Ca^{{2+}}$ concentration in the cytosol")
         return fig, axs
 
     def fig_2_ts_2_er_signals(self, df: pd.DataFrame, *, fignum=2):
@@ -89,8 +89,8 @@ class Plotter(NamedTuple):
         sns.lineplot(data=df, x="t", y="c_e", hue="label", ax=ax_oscillations)
 
         for ax, title in zip(axs, ("A", "B")):
-            ax.set_xlabel(None)
-            ax.set_ylabel(None)
+            ax.set_xlabel(None)  # type: ignore
+            ax.set_ylabel(None)  # type: ignore
             ax.set_title(title)
 
         cutout_t = 400
@@ -106,7 +106,7 @@ class Plotter(NamedTuple):
 
         fig.subplots_adjust(wspace=0.25)
         fig.supxlabel("$t, s$")
-        fig.suptitle("$c_{{e}}(t)$ is $Ca^{{+2}}$ concentration in ER")
+        fig.suptitle("$c_{{e}}(t)$ is $Ca^{{2+}}$ concentration in ER")
         return fig, axs
 
     def fig_3_ts_2_speed_signals(self, df: pd.DataFrame, *, fignum=3):
@@ -117,7 +117,7 @@ class Plotter(NamedTuple):
         ax.set_xlabel("$t, s$")
         ax.set_ylabel("$v$, $\\mu M/s$")
         ax.legend(loc="lower right")
-        fig.suptitle("$Ca^{{+2}}$ influx from outside of the cell")
+        fig.suptitle("$Ca^{{2+}}$ influx from outside of the cell")
         return fig, ax
 
     @staticmethod
@@ -210,11 +210,11 @@ class Plotter(NamedTuple):
 
         ybroken_axis(
             *(ax_dict[part] for part in pair_max),
-            color=get_ax_xgridcolor(ax_dict["max_high"]),
+            color=get_ax_xgridcolor(ax_dict["max_high"]), # type: ignore
         )
 
         Q2_Q3(ax_dict["max_low"], [no_mf_max, mf_max])
-        regression_plot(ax_dict["max_low"], coefs_max)
+        regression_plot(ax_dict["max_low"], coefs_max)  # type: ignore
         ax_dict["max_low"].set_xticks(x, ["No MF", "MF"])
         ax_dict["max_low"].set_xlabel("Local\nMaxima")
         ax_dict["max_high"].set_title("A")
@@ -225,7 +225,7 @@ class Plotter(NamedTuple):
         ax_dict["min"].set_ylim(bottom=0.0)
 
         Q2_Q3(ax_dict["min"], [no_mf_min, mf_min])
-        regression_plot(ax_dict["min"], coefs_min)
+        regression_plot(ax_dict["min"], coefs_min)  # type: ignore
         ax_dict["min"].set_xlabel("Local\nMinima")
         ax_dict["min"].set_xticks(x, ["No MF", "MF"])
         ax_dict["min"].set_title("B")
@@ -237,11 +237,11 @@ class Plotter(NamedTuple):
 
         ybroken_axis(
             *(ax_dict[part] for part in pair_mf),
-            color=get_ax_xgridcolor(ax_dict["mf_high"]),
+            color=get_ax_xgridcolor(ax_dict["mf_high"]), # type: ignore
         )
 
         Q2_Q3(ax_dict["mf_low"], [mf_max, mf_min])
-        regression_plot(ax_dict["mf_low"], coefs_mf)
+        regression_plot(ax_dict["mf_low"], coefs_mf)  # type: ignore
         ax_dict["mf_low"].set_xticks(x, ["Local\nMaxima", "Local\nMinima"])
         ax_dict["mf_low"].set_xlabel("MF")
         ax_dict["mf_high"].set_title("C")
