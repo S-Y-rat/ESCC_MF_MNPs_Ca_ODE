@@ -6,7 +6,6 @@ import jax
 
 jax.config.update("jax_enable_x64", True)
 import jax.numpy as jnp
-from scipy.stats import levene, ttest_ind
 import seaborn as sns
 import pandas as pd
 
@@ -182,44 +181,6 @@ def plot_c():
 
 plot_c().savefig("fig_4_extrema_end_median_regr_2_models.svg")
 
-
-# %%
-def find_levene(df: pd.DataFrame) -> None:
-    B = 25
-    df_filtered = df_loc_fn(df, Bs=[B * 1e-3])
-    cols = ["c", "c_e", "h"]
-
-    def fmt_fn(vs: list[float]) -> str:
-        return ", ".join([f"{key}: {value:.4f}" for key, value in zip(cols, vs)])
-
-    gen_fn = lambda: (group[cols].to_numpy() for _, group in df_filtered.groupby("idx"))
-    levene_all = levene(
-        df_loc_fn(df_defaults, Bs=[0])[cols].to_numpy(),
-        *gen_fn(),
-    )
-    levene_mf = levene(
-        *gen_fn(),
-    )
-    for levene_test, label in zip(
-        [levene_all, levene_mf],
-        [
-            f"all models ({B} mT)",
-            f"all magnetic models (0.0 mT and {B} mT)",
-        ],
-    ):
-        print(
-            "Frequencies (pi mHz): {}\nResults of Levene test for {}:\n\tstatistic={{{}}},\n\tp-value={{{}}}".format(
-                jnp.unique(df_filtered["omega"].to_numpy() / jnp.pi * 1e3),
-                label,
-                fmt_fn(levene_test.statistic),
-                fmt_fn(levene_test.pvalue),
-            )
-        )
-
-
-find_levene(df_models)
-print("\n#########################\n")
-find_levene(df_models.loc[df_models["omega"] != 0.5e-3 * jnp.pi])
 
 # %%
 fig, _ = plotter.fig_1_ts_cyt_signals(
