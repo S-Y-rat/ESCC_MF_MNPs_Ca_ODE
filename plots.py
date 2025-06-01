@@ -113,6 +113,15 @@ find_c_periods()
 
 
 # %%
+def peak_max() -> None:
+    df = df_loc_fn(df_defaults, Bs=[25e-3])
+    local_max: float = jnp.max(jnp.asarray(df["c"][df["t"] <= 10])).item()
+    print(f"Maximal [Ca2+] at first 200 s (IP3R-induced peak): {local_max:.2f} muM")
+
+
+peak_max()
+
+# %%
 fig, _ = plotter.fig_2_ts_2_er_signals(df_defaults)
 fig.savefig("fig_2_ts_2_er_signals.svg")
 
@@ -130,14 +139,19 @@ def find_v_periods():
         find_local_max_time, df_mm["t"].to_numpy(), df_mm["v"].to_numpy()
     )
 
-    interval_J_in_magn_1 = J_in_magn_local_max_time(
-        800, 1000
-    ) - J_in_magn_local_max_time(200, 400)
-    interval_J_in_magn_2 = J_in_magn_local_max_time(
-        1400, 1600
-    ) - J_in_magn_local_max_time(800, 1000)
+    local_mins = jnp.array(
+        [
+            J_in_magn_local_max_time(200, 400),
+            J_in_magn_local_max_time(800, 1000),
+            J_in_magn_local_max_time(1400, 1600),
+        ]
+    )
+    diffs = jnp.diff(local_mins)
+    formated_local_means = [f"{m:.2f}" for m in local_mins]
+
+    print(f"Negative peaks are at {formated_local_means} s")
     print(
-        f"First interval for v(t) magn: {interval_J_in_magn_1:.2f} s\nSecond interval for v(t) magn: {interval_J_in_magn_2:.2f} s"
+        f"First interval for v(t) magn: {diffs[0]:.2f} s\nSecond interval for v(t) magn: {diffs[1]:.2f} s"
     )
 
 
@@ -169,18 +183,66 @@ def get_local_min_max(xs: jax.Array):
 
 
 # %%
-def plot_c():
-    df_no_field = df_loc_fn(df_defaults, Bs=[0.0])
-    df_field = df_loc_fn(df_defaults, Bs=[25e-3])
-    fig, _ = plotter.fig_4_extrema_end_median_regr_2_models(
-        get_local_min_max(jnp.asarray(df_no_field["c"].to_numpy())),
-        get_local_min_max(jnp.asarray(df_field["c"].to_numpy())),
+def local_minima_periods_medians(df_param: str):
+    def internal(B: float):
+        df = df_loc_fn(df_defaults, Bs=[B])
+        return jnp.asarray(df["t"].to_numpy())[
+            get_local_min_max_mask(jnp.asarray(df[df_param].to_numpy()))[0]
+        ]
+
+    no_mf, mf = 0.0, 25e-3
+    no_mf_local_min_t = internal(no_mf)
+    mf_local_min_t = internal(mf)
+
+    no_mf_diffs = jnp.diff(no_mf_local_min_t)
+    mf_diffs = jnp.diff(mf_local_min_t)
+
+    no_mf_diffs_formated = [f"{t:.2f}" for t in no_mf_diffs]
+    mf_diffs_formated = [f"{t:.2f}" for t in mf_diffs]
+
+    print(f"Differenses when no MF: {no_mf_diffs_formated} s")
+    print(f"Differenses when MF: {mf_diffs_formated} s")
+
+    print("Corresponding shapes: {}, {}".format(no_mf_diffs.shape, mf_diffs.shape))
+
+    print(
+        "Corresponding medians: {:.2f} s, {:.2f} s".format(
+            jnp.median(no_mf_diffs), jnp.median(mf_diffs)
+        )
     )
-    return fig
 
 
-plot_c().savefig("fig_4_extrema_end_median_regr_2_models.svg")
+print("Periods of local minima for [Ca2+]")
+local_minima_periods_medians("c")
+print("\nPeriods of local minima for v")
+local_minima_periods_medians("v")
 
+
+# %%
+def scatter_c_effects() -> None:
+    def plot_c():
+        df_no_mf = df_loc_fn(df_defaults, Bs=[0.0])
+        df_mf = df_loc_fn(df_defaults, Bs=[25e-3])
+
+        no_mf_local_min_max = get_local_min_max(jnp.asarray(df_no_mf["c"].to_numpy()))
+        mf_local_min_max = get_local_min_max(jnp.asarray(df_mf["c"].to_numpy()))
+
+        fig, _ = plotter.fig_4_extrema_end_median_regr_2_models(
+            no_mf_local_min_max,
+            mf_local_min_max,
+        )
+        return fig, no_mf_local_min_max, mf_local_min_max
+
+    fig, no_mf_loc, mf_loc = plot_c()
+    fig.savefig("fig_4_extrema_end_median_regr_2_models.svg")
+    print("\nExtrema: min, max")
+    print(
+        f"Shapes of local extrema when no MF: {no_mf_loc[0].shape}, {no_mf_loc[1].shape}"
+    )
+    print(f"Shapes of local extrema when MF: {mf_loc[0].shape}, {mf_loc[1].shape}")
+
+
+scatter_c_effects()
 
 # %%
 fig, _ = plotter.fig_1_ts_cyt_signals(
