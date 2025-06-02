@@ -21,7 +21,8 @@ from solver import multisim, interpolate_data
 # %%
 start_time = time.perf_counter()
 T0, T1 = 0, 1800
-plotter = Plotter(T0, T1)
+plotter = Plotter(t0=T0, t1=T1)
+figsaver = plotter.savefmts(["pdf", "svg"])
 
 
 # %%
@@ -75,7 +76,7 @@ df_defaults = df_loc_fn(df_models, Bs=[0.0, 25e-3], omegas=[1.7e-3 * jnp.pi])
 
 # %%
 fig, _ = plotter.fig_1_ts_cyt_signals(df_defaults)
-fig.savefig("fig_1_ts_2_cyt_signals.svg")
+figsaver(fig, "Figure_4")
 
 
 # %%
@@ -126,12 +127,12 @@ peak_max()
 
 # %%
 fig, _ = plotter.fig_2_ts_2_er_signals(df_defaults)
-fig.savefig("fig_2_ts_2_er_signals.svg")
+figsaver(fig, "Figure_5")
 
 
 # %%
 fig, _ = plotter.fig_3_ts_2_speed_signals(df_defaults)
-fig.savefig("fig_3_ts_2_speed_signals.svg")
+figsaver(fig, "Figure_6")
 
 
 # %%
@@ -237,7 +238,7 @@ def scatter_c_effects() -> None:
         return fig, no_mf_local_min_max, mf_local_min_max
 
     fig, no_mf_loc, mf_loc = plot_c()
-    fig.savefig("fig_4_extrema_end_median_regr_2_models.svg")
+    figsaver(fig, "Figure_7")
     print("\nExtrema: min, max")
     print(
         f"Shapes of local extrema when no MF: {no_mf_loc[0].shape}, {no_mf_loc[1].shape}"
@@ -258,7 +259,7 @@ fig, _ = plotter.fig_1_ts_cyt_signals(
     fignum=5,
     alpha=0.7,
 )
-fig.savefig("fig_5_ts_cyt_signals.svg")
+figsaver(fig, "Figure_8")
 
 # %%
 fig, _ = plotter.fig_1_ts_cyt_signals(
@@ -266,7 +267,7 @@ fig, _ = plotter.fig_1_ts_cyt_signals(
     fignum=6,
     alpha=0.7,
 )
-fig.savefig("fig_6_ts_cyt_signals.svg")
+figsaver(fig, "Figure_9")
 
 # %%
 fig, _ = plotter.fig_1_ts_cyt_signals(
@@ -274,7 +275,7 @@ fig, _ = plotter.fig_1_ts_cyt_signals(
     fignum=7,
     alpha=0.7,
 )
-fig.savefig("fig_7_ts_cyt_signals.svg")
+figsaver(fig, "Figure_10")
 
 # %%
 fig, _ = plotter.fig_1_ts_cyt_signals(
@@ -284,7 +285,7 @@ fig, _ = plotter.fig_1_ts_cyt_signals(
     fignum=8,
     alpha=0.7,
 )
-fig.savefig("fig_8_ts_cyt_signals.svg")
+figsaver(fig, "Figure_11")
 
 # %%
 plotter.show()

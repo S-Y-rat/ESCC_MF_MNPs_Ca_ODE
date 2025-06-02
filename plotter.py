@@ -1,8 +1,9 @@
-from typing import NamedTuple
+from pathlib import Path
 
 import jax
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 import seaborn as sns
 import pandas as pd
 
@@ -28,15 +29,37 @@ def ybroken_axis(ax_high, ax_low, *, d=0.5, color="k"):
     yaxis_breaks_marker(ax_low, (1, 1))
 
 
-class Plotter(NamedTuple):
-    t0: int
-    t1: int
-    td: int = 10
-    figkwargs: dict = dict(figsize=(10, 5))
+class Plotter:
+    def __init__(
+        self,
+        t0: int,
+        t1: int,
+        td: int = 10,
+        figures_dir=Path("figures"),
+        figkwargs: dict = dict(figsize=(10, 5)),
+        dpi: int = 600,
+    ):
+        self.t0 = t0
+        self.t1 = t1
+        self.td = td
+        self.figures_dir = figures_dir
+        self.figkwargs = figkwargs
+        self.dpi = dpi
+        figures_dir.mkdir(exist_ok=True)
 
     @staticmethod
     def show() -> None:
         plt.show()
+
+    def savefmts(self, fmts: list[str]):
+        def internal(fig: Figure, name: str) -> None:
+            def figure_path(fmt: str) -> Path:
+                return self.figures_dir / f"{name}.{fmt}"
+
+            for fmt in fmts:
+                fig.savefig(figure_path(fmt), dpi=self.dpi)
+
+        return internal
 
     def fig_1_ts_cyt_signals(self, df: pd.DataFrame, *, fignum=1, alpha=1.0):
         fig = plt.figure(fignum, **self.figkwargs)
@@ -194,7 +217,7 @@ class Plotter(NamedTuple):
 
         ybroken_axis(
             *(ax_dict[part] for part in pair_max),
-            color=get_ax_xgridcolor(ax_dict["max_high"]), # type: ignore
+            color=get_ax_xgridcolor(ax_dict["max_high"]),  # type: ignore
         )
 
         regression_plot(ax_dict["max_low"], coefs_max)  # type: ignore
@@ -219,7 +242,7 @@ class Plotter(NamedTuple):
 
         ybroken_axis(
             *(ax_dict[part] for part in pair_mf),
-            color=get_ax_xgridcolor(ax_dict["mf_high"]), # type: ignore
+            color=get_ax_xgridcolor(ax_dict["mf_high"]),  # type: ignore
         )
 
         regression_plot(ax_dict["mf_low"], coefs_mf)  # type: ignore
