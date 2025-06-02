@@ -1,4 +1,3 @@
-from typing import Optional
 import jax
 import jax.numpy as jnp
 import equinox as eqx
@@ -13,6 +12,7 @@ class CalciumModel(eqx.Module):
     # Набір розмірних параметрів, що використовуються для перетворення
     # між розмірними та безрозмірними параметрами та змінними
 
+    mp: MagneticFieldParameters
     # Table 1 (Addition 1. Magnetic shear stress in Chang's model).
     k_f: float = (
         3.9  # Scaling factor that controls [Ca2+] release through IP3R; IP3R density and channel activity
@@ -74,7 +74,6 @@ class CalciumModel(eqx.Module):
     c_e_0: float = 100.0  # The initial concentration of Ca2+ in ER
     h_0: float = 0.08  # The initial rate at which Ca2+ can activate IP3Rs
     p_0: float = 0.1  # The initial rate of Ca2+ activation IP3
-    mp: Optional[MagneticFieldParameters] = None
 
     @property
     def k(self):

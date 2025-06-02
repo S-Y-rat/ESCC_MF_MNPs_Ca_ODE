@@ -15,7 +15,7 @@ def simulate(
     diff_fun_system: Callable[[jax.Array, jax.Array, None], jax.Array],
     initial_values: jax.Array,
 ):
-    term = ODETerm(diff_fun_system)
+    term = ODETerm(diff_fun_system) # type: ignore
     solver = Dopri5()
     saveat = SaveAt(dense=True)
     stepsize_controller = PIDController(rtol=1e-8, atol=1e-8)
@@ -34,8 +34,8 @@ def simulate(
 
 def batched_adapter(*diff_fun_systems: CalciumModel):
     def func(t: jax.Array, Ss: jax.Array, args=None):
-        Ss = jnp.array_split(Ss, len(diff_fun_systems))
-        return jnp.concat([f(t, S, args) for f, S in zip(diff_fun_systems, Ss)])
+        splited = jnp.array_split(Ss, len(diff_fun_systems))
+        return jnp.concat([f(t, S, args) for f, S in zip(diff_fun_systems, splited)])
 
     return jax.jit(func)
 
@@ -58,7 +58,7 @@ def interpolate_data(
     models: list[CalciumModel],
     ts: jax.Array,
 ) -> pd.DataFrame:
-    def J_in_fn(t: float, c_e: float, model: CalciumModel):
+    def J_in_fn(t: jax.Array, c_e: jax.Array, model: CalciumModel):
         return model.delta * model.J_in(c_e) + model.J_magn(model.mp, t)
 
     interpolated: jax.Array = jax.vmap(sol.evaluate)(ts)
