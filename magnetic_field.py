@@ -11,16 +11,12 @@ class MagneticFieldParameters(NamedTuple):
 
     regime: str = "gradient"
     time_dependence: str = "oscillating"
-    Ms: float = (
-        510e3  # Ms=510*(10**3)  # Ms is magnetization saturation of magnetic nanoparticle, A/m
-    )
+    Ms: float = 510e3  # Ms=510*(10**3)  # Ms is magnetization saturation of magnetic nanoparticle, A/m
 
     r: float = 100e-9  # r=100*(10**(-9))  # r is magnetic nanoparticle radius, m
     # G0 = 300  # G0 is the maximum value of dBz/dz, B=i*const – j*G*y+ k*G*z
     # G0 = 10**5 # maximum achievable G0 максимально досяжний G0
-    G0: float = (
-        145.0  # G0=30  G0 is the maximum value of dBz/dz, B=i*const – j*G*y+ k*G*z   (4)
-    )
+    G0: float = 145.0  # G0=30  G0 is the maximum value of dBz/dz, B=i*const – j*G*y+ k*G*z   (4)
     omega: float = (
         1.7 * jnp.pi * 0.001
     )  # omega=0.2  # omega is dimensionless frequency of magnetic field oscillation
@@ -41,7 +37,7 @@ class MagneticFieldParameters(NamedTuple):
     @property
     def legend_MF(self) -> str:
         if self.__is_uni_rot:
-            return f"$B={self.B*1e3}$ mT, $\\omega={self.omega*1e3/jnp.pi}\\cdot\\pi$ mHz"
+            return f"$B={self.B * 1e3}$ mT, $\\omega={self.omega * 1e3 / jnp.pi}\\cdot\\pi$ mHz"
         return f"G0={self.G0} T/m"
 
     @property

@@ -14,9 +14,7 @@ class CalciumModel(eqx.Module):
 
     mp: MagneticFieldParameters
     # Table 1 (Addition 1. Magnetic shear stress in Chang's model).
-    k_f: float = (
-        3.9  # Scaling factor that controls [Ca2+] release through IP3R; IP3R density and channel activity
-    )
+    k_f: float = 3.9  # Scaling factor that controls [Ca2+] release through IP3R; IP3R density and channel activity
     # k_f = 10
     # k_f = 3.9 s-1
     V_p: float = 0.9  # Maximum capacity of SERCA pump
@@ -25,31 +23,21 @@ class CalciumModel(eqx.Module):
     delta: float = (
         1.5  # Used to adjust ratio of [Ca2+] across plasma membrane to ER membrane
     )
-    alpha_0: float = (
-        0.0027  # Flow of calcium into the cell through an unspecified leak (невизначений витік)
-    )
+    alpha_0: float = 0.0027  # Flow of calcium into the cell through an unspecified leak (невизначений витік)
     alpha_1: float = (
         0.385  # Rate constant for SOC channels Константа швидкості для каналів SOC
     )
     # alpha_1 = 0.07
-    K_e: float = (
-        8.0  # Half-maximal [Ca2+] ER for SOC channels Напівмаксимальний [Ca2+] в ER для каналів SOC
-    )
-    V_pm: float = (
-        0.11  # Maximum capacity of plasma membrane pump Максимальна потужність насоса плазматичної мембрани
-    )
-    K_pm: float = (
-        0.3  # Half-maximal [Ca2+] for plasma membrane pump Напівмаксимальний [Ca2+] для насоса плазматичної мембрани
-    )
+    K_e: float = 8.0  # Half-maximal [Ca2+] ER for SOC channels Напівмаксимальний [Ca2+] в ER для каналів SOC
+    V_pm: float = 0.11  # Maximum capacity of plasma membrane pump Максимальна потужність насоса плазматичної мембрани
+    K_pm: float = 0.3  # Half-maximal [Ca2+] for plasma membrane pump Напівмаксимальний [Ca2+] для насоса плазматичної мембрани
     gamma: float = 5.5  # γ Ratio of cytoplasmic volume to ER volume
     K_h: float = 0.08  # The concentration of Ca2+ activated IP3R
     K_tau: float = 0.1  # The concentration of Ca 2+ in response to β
     tau_max: float = 1420.0  #
     # tau_max = 1000
     # tau_max = 10
-    beta_p: float = (
-        0.027  # Rate of decay of p to its steady state Швидкість розпаду p до стаціонарного стану
-    )
+    beta_p: float = 0.027  # Rate of decay of p to its steady state Швидкість розпаду p до стаціонарного стану
     p_s: float = 0.1
     k_beta: float = 0.4
     K_c: float = 0.2  # Half-maximal [Ca2+] for IP3R
@@ -58,9 +46,7 @@ class CalciumModel(eqx.Module):
     # qmax_Plank = 17.6  # qmax=17.6 microM/s
     qmax_Plank: float = 0.04  # Max. WSS-induced Ca2+ influx rate
     # alpha_Plank = 1_000
-    alpha_Plank: float = (
-        1_000_000  # alpha=2 No-load channel constant, (1 + alpha)**(-1) is the probability that
-    )
+    alpha_Plank: float = 1_000_000  # alpha=2 No-load channel constant, (1 + alpha)**(-1) is the probability that
     # a channel is in the open state in the no-load case W=0
     fe_Plank: float = 0.0134  # fe=0.0134  # is the fraction of the energy within
     # the membrane that gates the shear-sensitive Ca2+ channels
@@ -99,7 +85,7 @@ class CalciumModel(eqx.Module):
                 "through IP3R; IP3R density and channel activity",
                 f"V_p = {self.V_p} Maximum capacity of SERCA pump",
                 f"K = {self.K} Used to adjust the Ca 2+ concentration in ER",
-                f"k_p = {self.k_p} " "Half-maximal [IP3] for IP3R",
+                f"k_p = {self.k_p} Half-maximal [IP3] for IP3R",
                 f"delta = {self.delta} Used to adjust ratio of [Ca2+] across "
                 "plasma membrane to ER membrane",
                 f"alpha_0 = {self.alpha_0} Flow of calcium into the cell "
@@ -110,7 +96,7 @@ class CalciumModel(eqx.Module):
                 f"K_pm = {self.K_pm} Half-maximal [Ca2+] for plasma membrane pump",
                 f"gamma = {self.gamma} Ratio of cytoplasmic volume to ER volume",
                 f"K_h = {self.K_h} The concentration of Ca2+ activated IP3R",
-                f"K_tau = {self.K_tau} " "The concentration of Ca 2+ in response to β",
+                f"K_tau = {self.K_tau} The concentration of Ca 2+ in response to β",
                 f"tau_max = {self.tau_max} Maximum period for IP3R",
                 f"beta_p = {self.beta_p} Rate of decay of p to its steady state",
                 f"p_s = {self.p_s}",
@@ -118,7 +104,7 @@ class CalciumModel(eqx.Module):
                 f"K_c = {self.K_c} Half-maximal [Ca2+] for IP3R",
                 f"T_Plank = {self.T_Plank} T=500 s, Reference timescale",
                 f"K4_Plank = {self.K4_Plank} microM, Michaelis-Menten constant",
-                f"qmax_Plank = {self.qmax_Plank} Max. " "WSS-induced Ca2+ influx rate",
+                f"qmax_Plank = {self.qmax_Plank} Max. WSS-induced Ca2+ influx rate",
                 f"alpha_Plank = {self.alpha_Plank} alpha=2 No-load channel "
                 "constant, (1 + alpha)**(-1) is the probability that"
                 "a channel is in the open state in the no-load case W=0",
@@ -128,8 +114,7 @@ class CalciumModel(eqx.Module):
                 "\nDefining the initial conditions",
                 f"c_0 = {self.c_0} The initial concentration of Ca2+ in cytosol",
                 f"c_e_0 = {self.c_e_0} The initial concentration of Ca2+ in ER",
-                f"h_0 = {self.h_0} "
-                "The initial rate at which Ca2+ can activate IP3Rs",
+                f"h_0 = {self.h_0} The initial rate at which Ca2+ can activate IP3Rs",
                 f"p_0 = {self.p_0} The initial rate of Ca2+ activation IP3",
             )
         )
