@@ -133,6 +133,6 @@ fig, _ = plotter.fig_1_ts_cyt_signals(
 figsaver(fig, "Figure_11")
 
 # %%
-plotter.show()
 end_time = time.perf_counter()
-print(f"Overall execution time is {end_time - start_time:.2f} s")
+print(f"Execution time before plotting is {end_time - start_time:.2f} s")
+plotter.show()
