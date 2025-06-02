@@ -1,5 +1,6 @@
 __pycache__/
 figures/
+alt_figures/
 *.ipynb
 *.zip
 *.md

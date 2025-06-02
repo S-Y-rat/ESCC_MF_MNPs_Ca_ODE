@@ -136,6 +136,9 @@ class CalciumModel(eqx.Module):
 
     @eqx.filter_jit
     def __call__(self, t: jax.Array, S: jax.Array, args=None) -> jax.Array:
+        return self.dWdt(t, S, args)
+
+    def dWdt(self, t: jax.Array, S: jax.Array, args=None) -> jax.Array:
         old_system = self.dSdt(t, S, args)
         if self.mp is not None:
             return old_system.at[0].set(old_system[0] + self.J_magn(self.mp, t))

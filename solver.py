@@ -8,14 +8,13 @@ import pandas as pd
 from calcium_model import CalciumModel
 
 
-@eqx.filter_jit
 def simulate(
     t0: float,
     t1: float,
     diff_fun_system: Callable[[jax.Array, jax.Array, None], jax.Array],
     initial_values: jax.Array,
 ):
-    term = ODETerm(diff_fun_system) # type: ignore
+    term = ODETerm(diff_fun_system)  # type: ignore
     solver = Dopri5()
     saveat = SaveAt(dense=True)
     stepsize_controller = PIDController(rtol=1e-8, atol=1e-8)
@@ -37,7 +36,7 @@ def batched_adapter(*diff_fun_systems: CalciumModel):
         splited = jnp.array_split(Ss, len(diff_fun_systems))
         return jnp.concat([f(t, S, args) for f, S in zip(diff_fun_systems, splited)])
 
-    return jax.jit(func)
+    return func
 
 
 def multisim(
@@ -48,7 +47,7 @@ def multisim(
     return simulate(
         t0=t0,
         t1=t1,
-        diff_fun_system=batched_adapter(*diff_fun_systems),
+        diff_fun_system=jax.jit(batched_adapter(*diff_fun_systems)),
         initial_values=jnp.concat([sys.initial_values for sys in diff_fun_systems]),
     )
 
