@@ -18,6 +18,17 @@ This repository contains the computational model and analysis code for investiga
 - Python 3.12
 - Install needed packages in current environment via `pip install -r requirements.txt`
 
+## Install
+
+```sh
+uv venv --python 3.12
+
+source .venv/bin/activate
+
+uv pip install -r requirements.txt
+uv pip install -r requirements-dev.txt
+```
+
 ## Usage
 
 To run implementation with diffrax (jit-compiled with jax):

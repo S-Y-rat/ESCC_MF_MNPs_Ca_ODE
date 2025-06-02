@@ -3,11 +3,8 @@ import time
 
 import jax
 
-jax.config.update("jax_enable_x64", True)
 import jax.numpy as jnp
 import seaborn as sns
-
-sns.set_theme(style="whitegrid")
 
 from magnetic_field import MagneticFieldParameters
 from calcium_model import CalciumModel
@@ -21,6 +18,9 @@ from plots_impl import (
     local_minima_periods_medians,
     scatter_c_effects,
 )
+
+jax.config.update("jax_enable_x64", True)
+sns.set_theme(style="whitegrid")
 
 # %%
 start_time = time.perf_counter()

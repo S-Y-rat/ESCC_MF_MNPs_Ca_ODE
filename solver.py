@@ -1,5 +1,4 @@
 from collections.abc import Callable
-import equinox as eqx
 from diffrax import diffeqsolve, ODETerm, Dopri5, SaveAt, PIDController, Solution
 import jax
 import jax.numpy as jnp

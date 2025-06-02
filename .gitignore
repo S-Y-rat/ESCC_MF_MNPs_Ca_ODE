@@ -1,5 +1,7 @@
 __pycache__/
 figures/
 alt_figures/
+.venv/
+.ruff_cache/
 *.ipynb
 *.zip
