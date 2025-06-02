@@ -216,7 +216,8 @@ class Plotter:
             group_jitter(keys[1], ax_dict[part], mf_max, 1, mf_max_color)
 
         ybroken_axis(
-            *(ax_dict[part] for part in pair_max),
+            ax_high=ax_dict[pair_max[0]],
+            ax_low=ax_dict[pair_max[1]],
             color=get_ax_xgridcolor(ax_dict["max_high"]),  # type: ignore
         )
 
@@ -241,7 +242,8 @@ class Plotter:
             group_jitter(keys[5], ax_dict[part], mf_min, 1, mf_min_color)
 
         ybroken_axis(
-            *(ax_dict[part] for part in pair_mf),
+            ax_high=ax_dict[pair_mf[0]],
+            ax_low=ax_dict[pair_mf[1]],
             color=get_ax_xgridcolor(ax_dict["mf_high"]),  # type: ignore
         )
 
