@@ -20,10 +20,25 @@ This repository contains the computational model and analysis code for investiga
 
 ## Install
 
+Installation of developmental dependencies (`requirements-dev.txt`) is for linter. It is not required for scripts to work.
+
+Linux/macOS:
+
 ```sh
 uv venv --python 3.12
 
 source .venv/bin/activate
+
+uv pip install -r requirements.txt
+uv pip install -r requirements-dev.txt
+```
+
+Windows 11:
+
+```powershell
+uv venv --python 3.12
+
+.venv\Scripts\activate
 
 uv pip install -r requirements.txt
 uv pip install -r requirements-dev.txt
