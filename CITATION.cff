@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you cite this repo, please cite it as below."
+authors:
+- family-names: "Salatskyi"
+  given-names: "Yevhen"
+  orcid: "https://orcid.org/0009-0007-6644-3938"
+- family-names: "Gorobets"
+  given-names: "Svitlana"
+  orcid: "https://orcid.org/0000-0002-5328-2959"
+- family-names: "Gorobets"
+  given-names: "Oksana"
+  orcid: "https://orcid.org/0000-0002-2911-6870"
+title: "Effects of magnetic field and magnetic nanoparticles on calcium signal in esophageal cancer cells"
+url: "https://github.com/S-Y-rat/ESCC_MF_MNPs_Ca_ODE"

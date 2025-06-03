@@ -1,4 +1,4 @@
-# Magnetic Field-Induced Calcium Signaling Modulation in ESCC Cells
+# Effects of magnetic field and magnetic nanoparticles on calcium signal in esophageal cancer cells
 
 Mathematical modeling of calcium dynamics in esophageal squamous cell carcinoma (ESCC) under magnetic field effects with magnetic nanoparticles for therapeutic applications.
 
