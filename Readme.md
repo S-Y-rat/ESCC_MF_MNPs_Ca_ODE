@@ -8,7 +8,7 @@ This repository contains the computational model and analysis code for investiga
 
 ## Key Features
 
-- Modified Chang model incorporating mechanosensitive calcium channels
+- Modified Chang model incorporating mechanosensitive calcium channels with magnetic nanoparticles on the plasma membrane
 - Simulation of magnetic field-induced wall shear stress effects
 - Analysis of calcium oscillation patterns under various magnetic field conditions
 - Parameter optimization for therapeutic applications
