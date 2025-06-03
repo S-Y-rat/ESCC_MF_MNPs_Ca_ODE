@@ -61,6 +61,29 @@ python plots_alt.py
 
 Generated `svg` and `pdf` figures will be located within `figures` directory for `diffrax` version, and within `alt_figures` directory for `scipy` version.
 
+## Expected Output
+
+- Console (STDOUT): time intervals, concentrations, time points, shapes (sizes) of arrays
+- Graphical windows: figures with time series of calcium oscillations, categorical data (local extrema). Enumeration starts from `1`.
+- Directories: `figures` for `plots.py`, and `alt_figures` for `plots_alt.py`. Both cases contain SVG and PDF files. Enumeration starts from `4` to reflect figures' order within the manuscript.
+- **If no window manager support**: would print a warning, but figures still generated.
+
+Exemplify size report:
+
+```
+Extrema: min, max
+Shapes of local extrema when no MF: (52,), (52,)
+Shapes of local extrema when MF: (68,), (68,)
+```
+
+Example of the last line of STDOUT:
+
+```
+Execution time before plotting is 7.77 s
+```
+
+**NOTE**: Execution time may vary because of your hardware and current processor loading.
+
 ## Custom Parameters
 
 To use custom parameters, please modify locally your source code copy.
