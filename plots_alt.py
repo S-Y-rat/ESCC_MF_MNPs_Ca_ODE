@@ -1,5 +1,6 @@
 # %%
 import time
+from pathlib import Path
 
 import jax
 
@@ -27,7 +28,7 @@ sns.set_theme(style="whitegrid")
 # %%
 start_time = time.perf_counter()
 T0, T1 = 0, 1800
-plotter = Plotter(t0=T0, t1=T1)
+plotter = Plotter(t0=T0, t1=T1, figures_dir=Path("alt_figures"))
 figsaver = plotter.savefmts(["pdf", "svg"])
 
 
