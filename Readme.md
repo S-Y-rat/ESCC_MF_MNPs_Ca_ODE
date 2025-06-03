@@ -17,6 +17,7 @@ This repository contains the computational model and analysis code for investiga
 
 - Python 3.12
 - Install needed packages in current environment via `pip install -r requirements.txt`
+- In case you want to use GPU acceleration, add such an option to `requirements.txt` before package installation. For example, if you want to use CUDA, then replace `jax` with `jax[cuda12]`
 
 ## Install
 
