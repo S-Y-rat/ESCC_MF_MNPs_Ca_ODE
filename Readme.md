@@ -21,7 +21,7 @@ This repository contains the computational model and analysis code for investiga
 
 ## Install
 
-Installation of developmental dependencies (`requirements-dev.txt`) is for linter. It is not required for scripts to work.
+Installation of developmental dependencies (`requirements-dev.txt`) is for linter/formatter. It is not required for scripts to work.
 
 Linux/macOS:
 
@@ -60,6 +60,20 @@ python plots_alt.py
 ```
 
 Generated `svg` and `pdf` figures will be located within `figures` directory for `diffrax` version, and within `alt_figures` directory for `scipy` version.
+
+## Development
+
+Run the linter:
+
+```sh
+ruff check
+```
+
+Run the formatter:
+
+```sh
+ruff format
+```
 
 ## Expected Output
 
