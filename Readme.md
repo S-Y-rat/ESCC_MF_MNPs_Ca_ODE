@@ -112,5 +112,5 @@ Key parameters:
 ## Authors
 
 - Salatskyi Y.A. (Igor Sikorsky Kyiv Polytechnic Institute), email: salatskiy.yevhen@lll.kpi.ua
-- Gorobets O.U. (Igor Sikorsky Kyiv Polytechnic Institute), email: gorobets.oksana@gmail.com
+- Gorobets O.Yu. (Igor Sikorsky Kyiv Polytechnic Institute), email: gorobets.oksana@gmail.com
 - Gorobets S.V. (Igor Sikorsky Kyiv Polytechnic Institute), email: gorobetssv@gmail.com
