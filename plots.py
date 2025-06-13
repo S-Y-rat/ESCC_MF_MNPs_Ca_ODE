@@ -30,8 +30,12 @@ figsaver = plotter.savefmts(["pdf", "svg"])
 
 
 # %%
+B, OMEGA = 25e-3, 1.7e-3 * jnp.pi
 magnetic_params_default = MagneticFieldParameters(
-    regime="uniform", time_dependence="rotating"
+    regime="uniform",
+    time_dependence="rotating",
+    B=B,
+    omega=OMEGA,
 )
 magnetic_params_25_mT = [
     magnetic_params_default,
@@ -59,7 +63,7 @@ df_models = interpolate_data(
     models=models,
     ts=jnp.linspace(T0, T1, 10 * (T1 - T0)),
 )
-df_defaults = df_loc_fn(df_models, Bs=[0.0, 25e-3], omegas=[1.7e-3 * jnp.pi])
+df_defaults = df_loc_fn(df_models, Bs=[0.0, B], omegas=[OMEGA])
 
 
 # %%
@@ -68,11 +72,11 @@ figsaver(fig, "Figure_4")
 
 
 # %%
-find_c_periods(df_loc_fn(df_defaults, Bs=[25e-3]))
+find_c_periods(df_loc_fn(df_defaults, Bs=[B]))
 
 
 # %%
-peak_max(df_loc_fn(df_defaults, Bs=[25e-3]))
+peak_max(df_loc_fn(df_defaults, Bs=[B]))
 
 # %%
 fig, _ = plotter.fig_2_ts_2_er_signals(df_defaults)
@@ -85,22 +89,22 @@ figsaver(fig, "Figure_6")
 
 
 # %%
-find_v_periods(df_loc_fn(df_defaults, Bs=[25e-3]))
+find_v_periods(df_loc_fn(df_defaults, Bs=[B]))
 
 
 # %%
 print("Periods of local minima for [Ca2+]")
-local_minima_periods_medians(df_defaults, "c")
+local_minima_periods_medians(df_defaults, "c", B=B)
 print("\nPeriods of local minima for v")
-local_minima_periods_medians(df_defaults, "v")
+local_minima_periods_medians(df_defaults, "v", B=B)
 
 
 # %%
-scatter_c_effects(df_defaults, plotter, figsaver)
+scatter_c_effects(df_defaults, plotter, figsaver, B=B)
 
 # %%
 fig, _ = plotter.fig_1_ts_cyt_signals(
-    df_models.loc[(df_models["B"] == 25e-3)].sort_values(by="omega", ascending=False),
+    df_models.loc[(df_models["B"] == B)].sort_values(by="omega", ascending=False),
     fignum=5,
     alpha=0.7,
 )
