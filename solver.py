@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from diffrax import diffeqsolve, ODETerm, Dopri5, SaveAt, PIDController, Solution
+from diffrax import diffeqsolve, ODETerm, Tsit5, SaveAt, PIDController, Solution
 import jax
 import jax.numpy as jnp
 import pandas as pd
@@ -12,9 +12,10 @@ def simulate(
     t1: float,
     diff_fun_system: Callable[[jax.Array, jax.Array, None], jax.Array],
     initial_values: jax.Array,
+    max_steps: int
 ):
     term = ODETerm(diff_fun_system)  # type: ignore
-    solver = Dopri5()
+    solver = Tsit5()
     saveat = SaveAt(dense=True)
     stepsize_controller = PIDController(rtol=1e-8, atol=1e-8)
     return diffeqsolve(
@@ -26,7 +27,7 @@ def simulate(
         y0=initial_values,
         saveat=saveat,
         stepsize_controller=stepsize_controller,
-        max_steps=16 * 4096,
+        max_steps=max_steps,
     )
 
 
@@ -42,12 +43,14 @@ def multisim(
     *diff_fun_systems: CalciumModel,
     t0: float,
     t1: float,
+    max_steps: int=10_000
 ) -> Solution:
     return simulate(
         t0=t0,
         t1=t1,
         diff_fun_system=jax.jit(batched_adapter(*diff_fun_systems)),
         initial_values=jnp.concat([sys.initial_values for sys in diff_fun_systems]),
+        max_steps=max_steps
     )
 
 
