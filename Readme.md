@@ -109,6 +109,24 @@ Key parameters:
 - Frequency of oscillation ($\omega$): Default $1.7\pi\cdot 10^{-3}$ Hz.
 - Simulation time: parameters T0 and T1 for start time and stop time respectively.
 
+## Multiple parameters
+
+Reimplementation in Julia was created for more performance-sensitive plots.
+
+Here is how to use it:
+
+```sh
+cd reimpl_ca
+
+# Install prerequisites
+julia --project=. -e 'using Pkg; Pkg.instantiate()'
+
+# Run script
+julia --project=. main.jl
+```
+
+**Note**: it can take a while, and plot figures will be created in `reimpl_ca` directory.
+
 ## Authors
 
 - Salatskyi Y.A. (Igor Sikorsky Kyiv Polytechnic Institute), email: salatskiy.yevhen@lll.kpi.ua
