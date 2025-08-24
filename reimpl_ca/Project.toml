@@ -4,17 +4,9 @@ authors = ["Yevhen <salatskiy.e@gmail.com>"]
 version = "0.1.0"
 
 [deps]
-CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
-DiffEqGPU = "071ae1c0-96b5-11e9-1965-c90190d839ea"
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
-OrdinaryDiffEq = "1dea7af3-3e70-54e6-95c3-0bf5283fa5ed"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
-CUDA = "5.8.2"
-DiffEqGPU = "3.7.0"
 DifferentialEquations = "7.16.1"
-OrdinaryDiffEq = "6.98.0"
 Plots = "1.40.14"
-StaticArrays = "1.9.13"
