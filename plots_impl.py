@@ -144,14 +144,14 @@ def scatter_c_effects(df_defaults: pd.DataFrame, plotter: Plotter, figsaver, B: 
         no_mf_local_min_max = get_local_min_max(jnp.asarray(df_no_mf["c"].to_numpy()))
         mf_local_min_max = get_local_min_max(jnp.asarray(df_mf["c"].to_numpy()))
 
-        fig, _ = plotter.fig_4_extrema_end_median_regr_2_models(
+        fig, _ = plotter.fig_6(
             no_mf_local_min_max,
             mf_local_min_max,
         )
         return fig, no_mf_local_min_max, mf_local_min_max
 
     fig, no_mf_loc, mf_loc = plot_c()
-    figsaver(fig, "Figure_7")
+    figsaver(fig, "Figure_6")
     print("\nExtrema: min, max")
     print(
         f"Shapes of local extrema when no MF: {no_mf_loc[0].shape}, {no_mf_loc[1].shape}"

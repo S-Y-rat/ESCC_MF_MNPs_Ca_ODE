@@ -20,7 +20,7 @@ from plots_impl import (
 )
 
 jax.config.update("jax_enable_x64", True)
-sns.set_theme(style="whitegrid")
+sns.set_theme(style="whitegrid", palette=sns.color_palette("colorblind"))
 
 # %%
 start_time = time.perf_counter()
@@ -37,22 +37,11 @@ magnetic_params_default = MagneticFieldParameters(
     B=B,
     omega=OMEGA,
 )
-magnetic_params_25_mT = [
-    magnetic_params_default,
-    magnetic_params_default._replace(omega=(1.5e-3 * jnp.pi)),
-    magnetic_params_default._replace(omega=(1e-3 * jnp.pi)),
-    magnetic_params_default._replace(omega=(0.5e-3 * jnp.pi)),
-]
-magmetic_params_no_field = [params._replace(B=0) for params in magnetic_params_25_mT]
-magnetic_params_10_mT = [params._replace(B=10e-3) for params in magnetic_params_25_mT]
-magnetic_params_100_mT = [params._replace(B=100e-3) for params in magnetic_params_25_mT]
 models = [
     CalciumModel(mp=fn_obj)
     for fn_obj in [
-        *magmetic_params_no_field,  # idx = range(0, 4)
-        *magnetic_params_10_mT,  # idx = range(4, 8)
-        *magnetic_params_25_mT,  # idx = range(8, 12)
-        *magnetic_params_100_mT,  # idx = range(12, 16)
+        magnetic_params_default._replace(B=0),
+        magnetic_params_default,
     ]
 ]
 batched_sol = multisim(t0=T0, t1=T1, *models)
@@ -67,8 +56,8 @@ df_defaults = df_loc_fn(df_models, Bs=[0.0, B], omegas=[OMEGA])
 
 
 # %%
-fig, _ = plotter.fig_1_ts_cyt_signals(df_defaults)
-figsaver(fig, "Figure_4")
+fig, _ = plotter.fig_3(df_defaults)
+figsaver(fig, "Figure_3")
 
 
 # %%
@@ -79,13 +68,13 @@ find_c_periods(df_loc_fn(df_defaults, Bs=[B]))
 peak_max(df_loc_fn(df_defaults, Bs=[B]))
 
 # %%
-fig, _ = plotter.fig_2_ts_2_er_signals(df_defaults)
-figsaver(fig, "Figure_5")
+fig, _ = plotter.fig_4(df_defaults)
+figsaver(fig, "Figure_4")
 
 
 # %%
-fig, _ = plotter.fig_3_ts_2_speed_signals(df_defaults)
-figsaver(fig, "Figure_6")
+fig, _ = plotter.fig_5(df_defaults)
+figsaver(fig, "Figure_5")
 
 
 # %%
@@ -101,40 +90,6 @@ local_minima_periods_medians(df_defaults, "v", B=B)
 
 # %%
 scatter_c_effects(df_defaults, plotter, figsaver, B=B)
-
-# %%
-fig, _ = plotter.fig_1_ts_cyt_signals(
-    df_models.loc[(df_models["B"] == B)].sort_values(by="omega", ascending=False),
-    fignum=5,
-    alpha=0.7,
-)
-figsaver(fig, "Figure_8")
-
-# %%
-fig, _ = plotter.fig_1_ts_cyt_signals(
-    df_models.loc[df_models["B"] == 100e-3].sort_values(by="omega", ascending=False),
-    fignum=6,
-    alpha=0.7,
-)
-figsaver(fig, "Figure_9")
-
-# %%
-fig, _ = plotter.fig_1_ts_cyt_signals(
-    df_models.loc[df_models["B"] == 10e-3].sort_values(by="omega", ascending=False),
-    fignum=7,
-    alpha=0.7,
-)
-figsaver(fig, "Figure_10")
-
-# %%
-fig, _ = plotter.fig_1_ts_cyt_signals(
-    df_models.loc[df_models["omega"] == 1.5e-3 * jnp.pi].sort_values(
-        by="B", ascending=True
-    ),
-    fignum=8,
-    alpha=0.7,
-)
-figsaver(fig, "Figure_11")
 
 # %%
 end_time = time.perf_counter()

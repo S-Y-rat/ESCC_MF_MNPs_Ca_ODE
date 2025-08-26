@@ -61,14 +61,21 @@ class Plotter:
 
         return internal
 
-    def fig_1_ts_cyt_signals(self, df: pd.DataFrame, *, fignum=1, alpha=1.0):
+    def fig_3(self, df: pd.DataFrame, *, fignum=3, alpha=1.0):
         fig = plt.figure(fignum, **self.figkwargs)
         fig.subplots_adjust(wspace=0.35)
         ax_peak = fig.add_subplot(1, 4, 1)
         ax_oscillations = fig.add_subplot(1, 4, (2, 4))
         axs = (ax_peak, ax_oscillations)
 
-        plot_kwargs = dict(data=df, x="t", y="c", hue="label", alpha=alpha)
+        plot_kwargs = dict(
+            data=df,
+            x="t",
+            y="c",
+            hue="label",
+            style="label",
+            alpha=alpha,
+        )
         sns.lineplot(**plot_kwargs, ax=ax_peak, legend=False)  # type: ignore
         sns.lineplot(**plot_kwargs, ax=ax_oscillations)  # type: ignore
 
@@ -86,7 +93,7 @@ class Plotter:
         fig.suptitle("$c(t)$ is $Ca^{{2+}}$ concentration in the cytosol")
         return fig, axs
 
-    def fig_2_ts_2_er_signals(self, df: pd.DataFrame, *, fignum=2):
+    def fig_4(self, df: pd.DataFrame, *, fignum=4):
         fig = plt.figure(fignum, **self.figkwargs)
         ax_peak = fig.add_subplot(1, 3, 1)
         ax_oscillations = fig.add_subplot(1, 3, (2, 3))
@@ -116,7 +123,7 @@ class Plotter:
         fig.suptitle("$c_{{e}}(t)$ is $Ca^{{2+}}$ concentration in ER")
         return fig, axs
 
-    def fig_3_ts_2_speed_signals(self, df: pd.DataFrame, *, fignum=3):
+    def fig_5(self, df: pd.DataFrame, *, fignum=5):
         fig = plt.figure(fignum, **self.figkwargs)
         ax = sns.lineplot(data=df, x="t", y="v", hue="label")
         ax.set_xlim(left=self.t0 - self.td, right=self.t1 + self.td)
@@ -128,14 +135,14 @@ class Plotter:
         return fig, ax
 
     @staticmethod
-    def fig_4_extrema_end_median_regr_2_models(
+    def fig_6(
         no_mf_min_max: tuple[jax.Array, jax.Array],
         mf_min_max: tuple[jax.Array, jax.Array],
         *,
         d_jitter=0.25,
         scatter_alpha=0.2,
         scatter_marker=".",
-        fignum=4,
+        fignum=6,
         figkwargs=dict(figsize=(10, 6)),
     ):
         def group_jitter(key, ax, ys, group_idx: int, color=None):
