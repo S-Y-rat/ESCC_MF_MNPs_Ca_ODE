@@ -65,7 +65,7 @@ end
 xs = 0:1:1800
 clims = (0.1, 0.3)
 
-fig8 = let
+fig7 = let
     fig = Figure(size=(1000, 500))
     ax = Axis(fig[1, 1], xlabel=L"$t$, s", ylabel=L"$\omega$, π mHz")
     hm = heatmap!(ax,
@@ -78,9 +78,9 @@ fig8 = let
     fig
 end
 
-save("Fig_8.pdf", fig8)
+save("Fig_7.pdf", fig7)
 
-fig9 = let
+fig8 = let
     fig = Figure(size=(1000, 500))
     ax = Axis(fig[1, 1], xlabel=L"$t$, s", ylabel=L"$B$, mT")
     hm = heatmap!(ax,
@@ -93,9 +93,9 @@ fig9 = let
     fig
 end
 
-save("Fig_9.pdf", fig9)
+save("Fig_8.pdf", fig8)
 
-fig10 = let
+fig9 = let
     fig = Figure(size=(1000, 500))
     ax = Axis(fig[1, 1], xlabel=L"$t$, s", ylabel=L"$ω$, Hz")
     hm = heatmap!(ax,
@@ -108,4 +108,4 @@ fig10 = let
     fig
 end
 
-save("Fig_10.pdf", fig10)
+save("Fig_9.pdf", fig9)
