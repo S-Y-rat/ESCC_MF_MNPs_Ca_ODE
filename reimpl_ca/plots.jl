@@ -1,10 +1,12 @@
+using CairoMakie: linewidth
 include("./src/reimpl_ca.jl")
 using OrdinaryDiffEq
 using CairoMakie, LaTeXStrings
 using Random, Distributions, Statistics
 using ColorSchemes
 
-set_theme!(theme_latexfonts())
+set_theme!(theme_latexfonts(), linewidth=2)
+const color = ColorSchemes.seaborn_colorblind
 
 const reltol, abstol = 1e-8, 1e-8
 const u0 = [0.1, 100.0, 0.08, 0.1]
@@ -43,10 +45,10 @@ const fig3 = let
     Label(fig[1:2, 0], L"$c(t)$, $\mu M$", fontsize=20, rotation=π/2)
     ys1 = getindex.(us1, 1)
     ys2 = getindex.(us2, 1)
-    lines!(ax1, ts, ys1)
-    lines!(ax1, ts, ys2, linestyle=:dash)
-    lines!(ax2, ts, ys1, label=label_no_mf)
-    lines!(ax2, ts, ys2, linestyle=:dash, label=label_mf)
+    lines!(ax1, ts, ys1, color=color[1])
+    lines!(ax1, ts, ys2, color=color[2], linestyle=:dash)
+    lines!(ax2, ts, ys1, color=color[1], label=label_no_mf)
+    lines!(ax2, ts, ys2, color=color[2], linestyle=:dash, label=label_mf)
     axislegend(ax2, position=:rt, framecolor=(:grey, 0.5))
     colsize!(fig.layout, 1, Relative(0.25))
     colsize!(fig.layout, 2, Relative(0.75))
@@ -71,10 +73,10 @@ const fig4 = let
     Label(fig[1:2, 0], L"$c_e(t)$, $\mu M$", fontsize=20, rotation=π/2)
     ys1 = getindex.(us1, 2)
     ys2 = getindex.(us2, 2)
-    lines!(ax1, ts, ys1)
-    lines!(ax1, ts, ys2, linestyle=:dash)
-    lines!(ax2, ts, ys1, label=label_no_mf)
-    lines!(ax2, ts, ys2, linestyle=:dash, label=label_mf)
+    lines!(ax1, ts, ys1, color=color[1])
+    lines!(ax1, ts, ys2, color=color[2], linestyle=:dash)
+    lines!(ax2, ts, ys1, color=color[1], label=label_no_mf)
+    lines!(ax2, ts, ys2, color=color[2], linestyle=:dash, label=label_mf)
     axislegend(ax2, position=:rt, framecolor=(:grey, 0.5))
     colsize!(fig.layout, 1, Relative(0.33))
     colsize!(fig.layout, 2, Relative(0.67))
@@ -102,8 +104,8 @@ const fig5 = let
     )
     ys1 = full_in(model_no_mf, getindex.(us1, 2), ts)
     ys2 = full_in(model_mf, getindex.(us2, 2), ts)
-    lines!(ax, ts, ys1, label=label_no_mf, color=ColorSchemes.tab10[1])
-    lines!(ax, ts, ys2, linestyle=:dash, color=ColorSchemes.tab10[2], label=label_mf)
+    lines!(ax, ts, ys1, label=label_no_mf, color=color[1])
+    lines!(ax, ts, ys2, linestyle=:dash, color=color[2], label=label_mf)
     axislegend(ax, position=:rb, framecolor=(:grey, 0.5))
     colsize!(fig.layout, 1, Relative(1.0))
     fig
