@@ -111,7 +111,7 @@ Key parameters:
 
 ## Multiple parameters
 
-Reimplementation in Julia was created for more performance-sensitive plots.
+Reimplementation in Julia was created for verification purpose.
 
 Here is how to use it:
 
@@ -121,7 +121,9 @@ cd reimpl_ca
 # Install prerequisites
 julia --project=. -e 'using Pkg; Pkg.instantiate()'
 
-# Run script
+# Run script for figures 3, 4, 5, 6
+julia --project=. plots.jl
+# Run script for figures 8, 9, 10
 julia --project=. main.jl
 ```
 

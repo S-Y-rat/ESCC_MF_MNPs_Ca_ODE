@@ -11,7 +11,7 @@ end
 τ_magn(mp::MagneticField, t) = π / (6mp.N_mn) * mp.Ms * mp.B * cos(mp.ω * t)
 
 struct CalciumModel
-    mp::MagneticField
+    mp::Union{MagneticField, Nothing}
     k_f::Float64
     V_p::Float64
     K::Float64
@@ -37,6 +37,10 @@ struct CalciumModel
     ) = new(mp, k_f, V_p, K, k_p, δ, α_0, α_1, K_e, V_pm, K_pm, γ, K_h, K_τ, τ_max, β_p, p_s, k_β, K_c, q_max)
 end
 
+function J_in(cp::CalciumModel, c_e)
+    cp.α_0 + cp.α_1 * cp.K_e^4 / (cp.K_e^4 + c_e^4)
+end
+
 function dSdt(u, cp::CalciumModel, t)
     c, c_e, h, p = u
 
@@ -52,11 +56,10 @@ function dSdt(u, cp::CalciumModel, t)
     P_o = β / (β + cp.k_β * (β + α))
 
     J_serca = cp.V_p * (c^2 - cp.K * c_e^2) / (c^2 + cp.k_p^2)
-    J_in = cp.α_0 + cp.α_1 * cp.K_e^4 / (cp.K_e^4 + c_e^4)
     J_pm = cp.V_pm * c^2 / (cp.K_pm^2 + c^2)
     J_IP3R = cp.k_f * P_o * (c_e - c)
 
-    dcdt = J_IP3R - J_serca + cp.δ * (J_in - J_pm)
+    dcdt = J_IP3R - J_serca + cp.δ * (J_in(cp, c_e) - J_pm)
     dc_edt = cp.γ * (J_serca - J_IP3R)
     dhdt = (h_∞ - h) / τ_h
     dpdt = cp.β_p * (cp.p_s - p)
@@ -64,7 +67,7 @@ function dSdt(u, cp::CalciumModel, t)
     [dcdt, dc_edt, dhdt, dpdt]
 end
 
-function dWdt(u, cp::CalciumModel, t)
+function J_magn(cp::CalciumModel, t)
     α_P = 1e6
     f_e_P = 0.0134
     T_e_P = 310.0
@@ -77,11 +80,13 @@ function dWdt(u, cp::CalciumModel, t)
     τ = τ_magn(cp.mp, t)
     W_denom = ε_P * τ * l_P + √(16δ_P^2 + ε_P^2 * τ^2 * l_P^2)
     W = (W_denom - 4δ_P)^2 / (8W_denom)
+    
+    cp.q_max / (1 + α_P * exp(-f_e_P * W / (k_P * T_e_P * N_ch)))
+end
 
-    J_magn = cp.q_max / (1 + α_P * exp(-f_e_P * W / (k_P * T_e_P * N_ch)))
+function dWdt(u, cp::CalciumModel, t)
     dcdt, dc_edt, dhdt, dpdt = dSdt(u, cp, t)
-
-    [dcdt + J_magn, dc_edt, dhdt, dpdt]
+    [dcdt + J_magn(cp, t), dc_edt, dhdt, dpdt]
 end
 
 end # module reimpl_ca

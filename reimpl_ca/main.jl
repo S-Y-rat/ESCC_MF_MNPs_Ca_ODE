@@ -1,4 +1,9 @@
-using DifferentialEquations, Plots, reimpl_ca
+include("./src/reimpl_ca.jl")
+using OrdinaryDiffEq
+using CairoMakie, LaTeXStrings
+using ColorSchemes
+
+set_theme!(theme_latexfonts(), colormap=ColorSchemes.thermal)
 
 reltol = 1e-8
 abstol = 1e-8
@@ -22,7 +27,7 @@ end
 
 ensemble_prob_mHz = EnsembleProblem(prob, prob_func=prob_func_mHz)
 sim_mHz = solve(
-    ensemble_prob_mHz, Tsit5(), EnsembleThreads(),
+    ensemble_prob_mHz, DP5(), EnsembleThreads(),
     reltol=reltol, abstol=abstol, trajectories=size(frequencies_mHz)[1]
 )
 
@@ -35,7 +40,7 @@ end
 
 ensemble_prob_induction = EnsembleProblem(prob, prob_func=prob_func_induction)
 sim_induction = solve(
-    ensemble_prob_induction, Tsit5(), EnsembleThreads(),
+    ensemble_prob_induction, DP5(), EnsembleThreads(),
     reltol=reltol, abstol=abstol, trajectories=size(inductions)[1]
 )
 
@@ -60,27 +65,47 @@ end
 xs = 0:1:1800
 clims = (0.1, 0.3)
 
-plt = heatmap(
-    xs, range(0, 1.7, length=size(frequencies_mHz)[1]), get_sim_heatmap(sim_mHz, xs),
-    clims=clims,
-    yticks=range(0, 1.7, 3),
-    xaxis="\$t\$, s", yaxis="\$ω\$, π mHz", dpi=600
-)
+fig8 = let
+    fig = Figure(size=(1000, 500))
+    ax = Axis(fig[1, 1], xlabel=L"$t$, s", ylabel=L"$\omega$, π mHz")
+    hm = heatmap!(ax,
+        xs,
+        frequencies_mHz * 1e3 / π,
+        transpose(get_sim_heatmap(sim_mHz, xs)),
+        colorrange=clims,
+    )
+    Colorbar(fig[:, end+1], hm)
+    fig
+end
 
-savefig(plt, "Fig_8.png")
+save("Fig_8.pdf", fig8)
 
-plt = heatmap(
-    xs, range(0.0, 100.0, length=size(inductions)[1]), get_sim_heatmap(sim_induction, xs),
-    clims=clims,
-    xaxis="\$t\$, s", yaxis="\$B\$, mT", dpi=600
-)
+fig9 = let
+    fig = Figure(size=(1000, 500))
+    ax = Axis(fig[1, 1], xlabel=L"$t$, s", ylabel=L"$B$, mT")
+    hm = heatmap!(ax,
+        xs,
+        inductions * 1e3,
+        transpose(get_sim_heatmap(sim_induction, xs)),
+        colorrange=clims,
+    )
+    Colorbar(fig[:, end+1], hm)
+    fig
+end
 
-savefig(plt, "Fig_9.png")
+save("Fig_9.pdf", fig9)
 
-plt = heatmap(
-    xs, frequencies_Hz, get_sim_heatmap(sim_Hz, xs),
-    clims=clims,
-    xaxis="\$t\$, s", yaxis="\$ω\$, π Hz", dpi=600
-)
+fig10 = let
+    fig = Figure(size=(1000, 500))
+    ax = Axis(fig[1, 1], xlabel=L"$t$, s", ylabel=L"$ω$, Hz")
+    hm = heatmap!(ax,
+        xs,
+        frequencies_Hz,
+        transpose(get_sim_heatmap(sim_Hz, xs)),
+        colorrange=clims,
+    )
+    Colorbar(fig[:, end+1], hm)
+    fig
+end
 
-savefig(plt, "Fig_10.png")
+save("Fig_10.pdf", fig10)
