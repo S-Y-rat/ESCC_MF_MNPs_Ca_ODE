@@ -25,7 +25,7 @@ const us2 = solve(prob2, DP5(), reltol=reltol, abstol=abstol)(ts).u
 const label_no_mf = L"$B=0.0$ mT, $\omega=1.7\cdot\pi$ mHz"
 const label_mf = L"$B=25.0$ mT, $\omega=1.7\cdot\pi$ mHz"
 
-const fig3 = let
+function fig3()
     fig = Figure(size=(1000, 500))
     Label(fig[0, 1:2],
         L"$c(t)$ is $Ca^{2+}$ concentration in the cytosol",
@@ -45,17 +45,19 @@ const fig3 = let
     Label(fig[1:2, 0], L"$c(t)$, $\mu M$", fontsize=20, rotation=π/2)
     ys1 = getindex.(us1, 1)
     ys2 = getindex.(us2, 1)
+
     lines!(ax1, ts, ys1, color=color[1])
     lines!(ax1, ts, ys2, color=color[2], linestyle=:dash)
     lines!(ax2, ts, ys1, color=color[1], label=label_no_mf)
     lines!(ax2, ts, ys2, color=color[2], linestyle=:dash, label=label_mf)
+
     axislegend(ax2, position=:rt, framecolor=(:grey, 0.5))
     colsize!(fig.layout, 1, Relative(0.25))
     colsize!(fig.layout, 2, Relative(0.75))
     fig
 end
 
-const fig4 = let
+function fig4()
     fig = Figure(size=(1000, 500))
     Label(fig[0, 1:2], L"$c_e(t)$ is $Ca^{2+}$ concentration in ER", fontsize=24)
     ax1 = Axis(fig[1, 1],
@@ -73,10 +75,12 @@ const fig4 = let
     Label(fig[1:2, 0], L"$c_e(t)$, $\mu M$", fontsize=20, rotation=π/2)
     ys1 = getindex.(us1, 2)
     ys2 = getindex.(us2, 2)
+
     lines!(ax1, ts, ys1, color=color[1])
     lines!(ax1, ts, ys2, color=color[2], linestyle=:dash)
     lines!(ax2, ts, ys1, color=color[1], label=label_no_mf)
     lines!(ax2, ts, ys2, color=color[2], linestyle=:dash, label=label_mf)
+
     axislegend(ax2, position=:rt, framecolor=(:grey, 0.5))
     colsize!(fig.layout, 1, Relative(0.33))
     colsize!(fig.layout, 2, Relative(0.67))
@@ -89,7 +93,7 @@ function full_in(cp::reimpl_ca.CalciumModel, c_e, t)
     ) + map(x -> reimpl_ca.J_magn(cp, x), t)
 end
 
-const fig5 = let
+function fig5()
     fig = Figure(size=(1000, 500))
     Label(fig[0, 1],
         L"$Ca^{2+}$ influx from outside of the cell",
@@ -104,8 +108,10 @@ const fig5 = let
     )
     ys1 = full_in(model_no_mf, getindex.(us1, 2), ts)
     ys2 = full_in(model_mf, getindex.(us2, 2), ts)
+
     lines!(ax, ts, ys1, label=label_no_mf, color=color[1])
     lines!(ax, ts, ys2, linestyle=:dash, color=color[2], label=label_mf)
+
     axislegend(ax, position=:rb, framecolor=(:grey, 0.5))
     colsize!(fig.layout, 1, Relative(1.0))
     fig
@@ -133,7 +139,7 @@ function local_min(arr)
     arr[mask]
 end
 
-const fig6 = let
+function fig6()
     alpha = 0.2
     fig = Figure(size=(1000, 600))
     ax11 = Axis(fig[1, 1], title="A", limits=(nothing, (1.22, 1.6)))
@@ -236,14 +242,26 @@ const fig6 = let
     fig
 end
 
-save("Fig_3.pdf", fig3)
-save("Fig_3.svg", fig3)
+begin
+    fig = fig3()
+    save("Fig_3.pdf", fig)
+    save("Fig_3.svg", fig)
+end
 
-save("Fig_4.pdf", fig4)
-save("Fig_4.svg", fig4)
+begin
+    fig = fig4()
+    save("Fig_4.pdf", fig)
+    save("Fig_4.svg", fig)
+end
 
-save("Fig_5.pdf", fig5)
-save("Fig_5.svg", fig5)
+begin
+    fig = fig5()
+    save("Fig_5.pdf", fig)
+    save("Fig_5.svg", fig)
+end
 
-save("Fig_6.pdf", fig6)
-save("Fig_6.svg", fig6)
+begin
+    fig = fig6()
+    save("Fig_6.pdf", fig)
+    save("Fig_6.svg", fig)
+end
