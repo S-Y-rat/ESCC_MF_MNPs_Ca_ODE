@@ -1,4 +1,4 @@
-using CairoMakie: linewidth
+using CairoMakie
 include("./src/reimpl_ca.jl")
 using OrdinaryDiffEq
 using CairoMakie, LaTeXStrings
