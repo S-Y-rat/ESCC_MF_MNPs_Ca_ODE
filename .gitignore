@@ -3,6 +3,7 @@ figures/
 alt_figures/
 .venv/
 .ruff_cache/
+reimpl_ca/*.png
 reimpl_ca/*.svg
 reimpl_ca/*.pdf
 *.ipynb

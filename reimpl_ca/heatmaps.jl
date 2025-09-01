@@ -79,6 +79,7 @@ fig7 = let
 end
 
 save("Fig_7.pdf", fig7)
+save("Fig_7.svg", fig7)
 
 fig8 = let
     fig = Figure(size=(1000, 500))
@@ -94,6 +95,7 @@ fig8 = let
 end
 
 save("Fig_8.pdf", fig8)
+save("Fig_8.svg", fig8)
 
 fig9 = let
     fig = Figure(size=(1000, 500))
@@ -109,3 +111,4 @@ fig9 = let
 end
 
 save("Fig_9.pdf", fig9)
+save("Fig_9.svg", fig9)
