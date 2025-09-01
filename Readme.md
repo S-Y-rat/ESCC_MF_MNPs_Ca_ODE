@@ -1,4 +1,4 @@
-# Effects of magnetic field and magnetic nanoparticles on calcium signal in esophageal cancer cells
+# Mathematical Modelling of Magnetic Field and Nanoparticle Effects on Calcium Signalling in Malignant Esophageal Cells
 
 Mathematical modeling of calcium dynamics in esophageal squamous cell carcinoma (ESCC) under magnetic field effects with magnetic nanoparticles for therapeutic applications.
 
@@ -111,7 +111,7 @@ Key parameters:
 
 ## Multiple parameters
 
-Reimplementation in Julia was created for verification purpose.
+Reimplementation in Julia (1.11) was created for verification purpose.
 
 Here is how to use it:
 
@@ -124,13 +124,15 @@ julia --project=. -e 'using Pkg; Pkg.instantiate()'
 # Run script for figures 3, 4, 5, 6
 julia --project=. plots.jl
 # Run script for figures 8, 9, 10
-julia --project=. main.jl
+julia --project=. heatmaps.jl
+# Run script for review plots
+julia --project=. ref.jl
 ```
 
 **Note**: it can take a while, and plot figures will be created in `reimpl_ca` directory.
 
 ## Authors
 
-- Salatskyi Y.A. (Igor Sikorsky Kyiv Polytechnic Institute), email: salatskiy.yevhen@lll.kpi.ua
+- Salatskyi Ye.A. (Igor Sikorsky Kyiv Polytechnic Institute), email: salatskiy.yevhen@lll.kpi.ua
 - Gorobets O.Yu. (Igor Sikorsky Kyiv Polytechnic Institute), email: gorobets.oksana@gmail.com
 - Gorobets S.V. (Igor Sikorsky Kyiv Polytechnic Institute), email: gorobetssv@gmail.com
