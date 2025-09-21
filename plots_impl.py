@@ -107,7 +107,9 @@ def get_local_min_max(xs: jax.Array):
     return xs[min_mask], xs[max_mask]
 
 
-def local_minima_periods_medians(df_defaults: pd.DataFrame, df_param: str, B: float) -> None:
+def local_minima_periods_medians(
+    df_defaults: pd.DataFrame, df_param: str, B: float
+) -> None:
     def internal(B: float):
         df = df_loc_fn(df_defaults, Bs=[B])
         return jnp.asarray(df["t"].to_numpy())[
@@ -136,7 +138,9 @@ def local_minima_periods_medians(df_defaults: pd.DataFrame, df_param: str, B: fl
     )
 
 
-def scatter_c_effects(df_defaults: pd.DataFrame, plotter: Plotter, figsaver, B: float) -> None:
+def scatter_c_effects(
+    df_defaults: pd.DataFrame, plotter: Plotter, figsaver, B: float
+) -> None:
     def plot_c():
         df_no_mf = df_loc_fn(df_defaults, Bs=[0.0])
         df_mf = df_loc_fn(df_defaults, Bs=[B])
