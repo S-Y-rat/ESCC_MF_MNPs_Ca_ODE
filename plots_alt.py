@@ -75,7 +75,9 @@ def data_interpolator(*models: CalciumModel) -> pd.DataFrame:
                     h=interpolated[2 + eq_num * idx],
                     p=interpolated[3 + eq_num * idx],
                     v=J_in_fn(ts, interpolated[1 + eq_num * idx], model),
-                    label=model.mp.legend_MF,
+                    label=model.mp.legend_0MF
+                    if model.mp.B == 0
+                    else model.mp.legend_MF,
                 )
             )
             for idx, model in enumerate(models)

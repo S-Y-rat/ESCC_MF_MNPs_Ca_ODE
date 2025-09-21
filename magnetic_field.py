@@ -43,8 +43,8 @@ class MagneticFieldParameters(NamedTuple):
     @property
     def legend_0MF(self) -> str:
         if self.__is_uni_rot:
-            return "B=0 mT"
-        return "G0=0 T/m"
+            return "$B=0$ mT (Chang model)"
+        return "$G0=0$ T/m (Chang model)"
 
     def __str__(self) -> str:
         if self.__is_grad_osc:

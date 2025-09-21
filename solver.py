@@ -12,7 +12,7 @@ def simulate(
     t1: float,
     diff_fun_system: Callable[[jax.Array, jax.Array, None], jax.Array],
     initial_values: jax.Array,
-    max_steps: int
+    max_steps: int,
 ):
     term = ODETerm(diff_fun_system)  # type: ignore
     solver = Tsit5()
@@ -40,17 +40,14 @@ def batched_adapter(*diff_fun_systems: CalciumModel):
 
 
 def multisim(
-    *diff_fun_systems: CalciumModel,
-    t0: float,
-    t1: float,
-    max_steps: int=10_000
+    *diff_fun_systems: CalciumModel, t0: float, t1: float, max_steps: int = 10_000
 ) -> Solution:
     return simulate(
         t0=t0,
         t1=t1,
         diff_fun_system=jax.jit(batched_adapter(*diff_fun_systems)),
         initial_values=jnp.concat([sys.initial_values for sys in diff_fun_systems]),
-        max_steps=max_steps
+        max_steps=max_steps,
     )
 
 
@@ -77,7 +74,9 @@ def interpolate_data(
                     h=interpolated[:, 2 + eq_num * idx],
                     p=interpolated[:, 3 + eq_num * idx],
                     v=J_in_fn(ts, interpolated[:, 1 + eq_num * idx], model),
-                    label=model.mp.legend_MF,
+                    label=model.mp.legend_0MF
+                    if model.mp.B == 0
+                    else model.mp.legend_MF,
                 )
             )
             for idx, model in enumerate(models)

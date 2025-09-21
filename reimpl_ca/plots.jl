@@ -22,7 +22,7 @@ const ts = 0.0:0.1:1800.0
 const us1 = solve(prob1, DP5(), reltol=reltol, abstol=abstol)(ts).u
 const us2 = solve(prob2, DP5(), reltol=reltol, abstol=abstol)(ts).u
 
-const label_no_mf = L"$B=0.0$ mT, $\omega=1.7\cdot\pi$ mHz"
+const label_no_mf = L"$B=0.0$ mT (Chang model)"
 const label_mf = L"$B=25.0$ mT, $\omega=1.7\cdot\pi$ mHz"
 
 function fig3()
